@@ -1,0 +1,22 @@
+{% extends "blog/base.html" %}
+{% block content %}
+    <div name="content-section" class="content-section bg-dark text-white">
+        <form method="POST" class="bg-dark text-white">
+            {% csrf_token %}
+            <fieldset class="form-group bg-dark text-white">
+                <legend class="border-bottom mb-4 bg-dark text-white">
+                    Delete Post
+                </legend>
+                <h2 class="bg-dark text-white">Are you a 100% certain you want to delete the post "{{object.title}}"</h2>
+            </fieldset>
+            <div class="form-group bg-dark text-white">
+                <button class="btn btn-outline-danger" type="submit">
+                    Yes, delete it!
+                </button>
+                <a class="btn btn-outline-secondary" href="{% url 'post-detail' post.id %}">
+                    No, I'll keep it!
+                </a>
+            </div>
+        </form>
+    </div>
+{% endblock %}

@@ -1,0 +1,44 @@
+ {% extends "blog/base.html" %}
+{% block content %}
+  <article name="article-{{post.id}}" class="media content-section bg-dark text-white border-light">
+    <img name="img-{{post.author.profile.image.url}}" class="rounded-circle article-img" src="{{ post.author.profile.image.url }}">
+    <div name="media-body" class="media-body bg-dark text-white">
+      <div name="article-metadata" class="article-metadata bg-dark text-white">
+        <a name="author" class="mr-2 text-info" href="{% url 'user-posts' post.author.username %}">@{{ post.author }}</a>
+        <small name="date" class="bg-dark text-white">{{ post.date_posted|date:"N j, Y"}}</small>
+        {% if post.author == user %}
+          <div  class="bg-dark text-white d-flex justify-content-start">
+              <a name="update" class="btn btn-outline-secondary btn-sm mt-1 mb-1 mr-2" href="{% url 'post-update' post.id %}">Update</a>
+              <a name="delete" class="btn btn-outline-secondary btn-sm mt-1 mb-1 ml-2" href="{% url 'post-delete' post.id %}">Delete</a>
+          </div>
+        {% endif %}
+      </div>
+      <h2 name="title" class="article-title bg-dark text-white mt-2">{{ post.title }}</h2><br>
+      <p name="article-content" class="article-content bg-dark text-white">{{ post.content }}</p>
+    </div>
+    <div class="d-flex flex-column justify-content-end mt-3 ml-3">
+      <div class="bg-dark text-white">
+        <form action="{% url 'like_post' post.pk %}" method="POST">
+          {% csrf_token %}
+            {% if liked %}
+              <button type="submit" name="post_id" value="{{ post.id }}" class="btn btn-outline-secondary btn-md ml-2 mt-2 mb-1 mr-0" >
+                💔
+              </button>
+            {% else %}
+              <button type="submit" name="post_id" value="{{ post.id }}" class="btn btn-outline-danger btn-md ml-2 mt-2 mb-1 mr-0" >
+                ❤
+              </button>
+            {% endif %}
+        </form>
+      </div>
+      <div  class="bg-dark text-sm-secondary mt-1 mr-2 ml-1">
+        {{ post.total_likes }}
+        {% if post.likes.count == 1%}
+          Like
+        {% else %}
+          Likes
+        {% endif %}
+      </div>
+    </div>
+  </article>
+{% endblock content %}
