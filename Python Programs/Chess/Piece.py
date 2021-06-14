@@ -163,6 +163,8 @@ class Piece:
 
         Determines if the direct path to the target square is blocked by friendly or unfriendly pieces
         '''
+        if not self.is_sliding_piece:
+            return False
         pass
 
     def is_target_friendly(self, board_state, where):
@@ -173,7 +175,12 @@ class Piece:
 
         Determines if the target square is already occupied by a friendly piece
         '''
-        pass
+        rank, file = where[1], where[0]
+        if self.name != 'KING':
+            if isinstance(board_state[rank, file], Empty):
+                return False
+            else:
+                return board_state[rank, file].color == self.color
 
     def is_target_unfriendly(self, board_state, where):
         '''
@@ -183,7 +190,12 @@ class Piece:
 
         Determines if the target square is already occupied by an unfriendly piece
         '''
-        pass
+        rank, file = where[1], where[0]
+        if self.name != 'KING':
+            if isinstance(board_state[rank, file], Empty):
+                return True
+            else:
+                return not board_state[rank, file].color == self.color
 
     def declare_illegal(self, where):
         '''
@@ -394,3 +406,23 @@ class Bishop(Piece):
 
     def __repr__(self):
         return f'{self.color[0]}{self.name[0]}'
+
+
+class Empty(Piece):
+    '''
+    We store empty positions using objects of this class
+    '''
+
+    name = 'EMPTY'
+
+    offsets = None
+
+    def __init__(self, position):
+        super().__init__('white', position)
+        self.color = None
+
+    def __str__(self):
+        return repr(self)
+
+    def __repr__(self):
+        return '  '
