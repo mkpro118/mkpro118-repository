@@ -10,8 +10,8 @@ class Piece:
 
     <var> offsets -> numpy.ndarray : Stores the offsets which indiciate the very next position a piece can go to
 
-    <var> is_sliding_piece -> bool : Sliding Pieces are : King, Queen, Rook, Bishop and Pawn
-    The only non sliding piece is the Knight
+    <var> is_sliding_piece -> bool : Sliding Pieces are : Queen, Rook and Bishop
+    The non sliding pieces are Pawn, Knight, King
 
     <var> files -> dict : Maps the file value from string to an integer
 
@@ -58,22 +58,76 @@ class Piece:
     }
 
     def __init__(self, color, current_position, is_sliding_piece=True):
+        '''
+        <param> color -> string : 'white' or 'black' indicating the color of the piece
+
+        <param> current_position -> string : The location of the square where the piece must be placed eg. 'a1' or 'h8'
+
+        <optional param> is_sliding_piece -> bool : True indicates that the piece is a sliding piece. Should be False for Knights only
+        '''
+        assert isinstance(color, str), 'Color values can be either \'white\' or \'black\''
+        assert isinstance(current_position, str), 'Position of the square must be in the standard algebraic notation for Chess, eg. \'A1\' or \'h8\''
+        assert all([len(current_position) == 2,
+                    current_position[0] in self.files,
+                    current_position[1] in self.ranks]), 'Invalid Square'
+        assert isinstance(is_sliding_piece, bool), 'is_sliding_piece must be a True or False value'
         self.is_sliding_piece = is_sliding_piece
         self.color = color
-        self.current_position_as_string = current_position
-        self.current_position = np.array([ranks[current_position[0]], files[current_position[1]]])
+        self.current_position_as_string = current_position.lower()
+        self.current_position = np.array([self.ranks[current_position[1]], self.files[current_position[0]]])
+
+    def get_current_position_as_string(self):
+        '''
+        <return> -> string : The current location of the piece as a string, eg. 'a1' or 'h8'
+        '''
+        return self.current_position_as_string
 
     def get_current_position(self):
-        return current_position_as_string
-
-
-    def possible_moves(self, board_state):
         '''
-        <param> board_state -> numpy.ndarray : Defines the state of the board at the time a move is made
+        <return> -> numpy.ndarray : The current location of the piece as an element of a numpy array, eg. array([1 0]) or array([3 4])
+        NOTE : The first element is the rank, the second element in the file
+        '''
+        return self.current_position
+
+    def set_current_position(self, target_position):
+        '''
+        <param> target_position -> string : The co-ordinates of the target square
+        '''
+        rank, file = self.ranks[target_position[1]], self.files[target_position[0]]
+        self.current_position = np.array([rank, file])
+
+    def possible_moves(self, board):
+        '''
+        <param> board -> np.ndarray : Shows the board
 
         <return> -> generator object : Returns a generator of all possible moves of a piece when clicked
         '''
-        pass
+        possible_moves = []
+        for offset in self.offsets:
+            position = self.get_current_position()
+            rank, file = position[0], position[1]
+            while True:
+                rank_offset, file_offset = offset[0], offset[1]
+                rank_possible = rank + rank_offset
+                file_possible = file + file_offset
+                try:
+                    _ = board[rank_possible, file_possible]
+                    assert not rank_possible < 0
+                    assert not file_possible < 0
+
+                except IndexError:
+                    break
+                except AssertionError:
+                    break
+                else:
+                    possible_moves.append([rank_possible, file_possible])
+                    rank = rank_possible
+                    file = file_possible
+                finally:
+                    if self.name == 'KING' or self.name == 'PAWN' or self.name == 'KNIGHT':
+                        break
+
+        yield from possible_moves
 
     def move(self, board_state, where):
         '''
@@ -142,20 +196,23 @@ class Piece:
 
 class Rook(Piece):
 
-    name = 'rook'
+    name = 'ROOK'
 
     offsets = np.array([[-1, 0],
                         [1, 0],
                         [0, -1],
                         [0, 1]])
 
+    def __str__(self):
+        return repr(self)
+
     def __repr__(self):
-        return f'{self.color} {self.name}'
+        return f'{self.color[0]}{self.name[0]}'
 
 
 class Queen(Piece):
 
-    name = 'queen'
+    name = 'QUEEN'
 
     offsets = np.array([[-1, 0],
                         [1, 0],
@@ -166,33 +223,111 @@ class Queen(Piece):
                         [-1, 1],
                         [-1, -1]])
 
-    def __repr__(self):
-        return f'{self.color} {self.name}'
+    def __init__(self, color):
+        position = 'd1' if color == 'white' else 'd8'
+        super().__init__(color, position)
 
-    def __init__(self, color, current_position):
-        super().__init__(color, current_position)
+    def __str__(self):
+        return repr(self)
+
+    def __repr__(self):
+        return f'{self.color[0]}{self.name[0]}'
 
 
 class Pawn(Piece):
+
+    name = 'PAWN'
+
+    is_sliding_piece = False
+
+    def __init__(self, color, current_position):
+        super().__init__(color, current_position)
+        self.has_moved = False
+        if color == 'white':
+            if self.get_current_position_as_string()[1] != '2':
+                self.offsets = np.array([[-1, 0],
+                                         [-1, 1],
+                                         [-1, -1]])
+            else:
+                self.offsets = np.array([[-1, 0],
+                                         [-1, 1],
+                                         [-1, -1],
+                                         [-2, 0]])
+        else:
+            if self.get_current_position_as_string()[1] != '7':
+                self.offsets = np.array([[1, 0],
+                                         [1, 1],
+                                         [1, -1]])
+            else:
+                self.offsets = np.array([[1, 0],
+                                         [1, 1],
+                                         [1, -1],
+                                         [2, 0]])
+
+    def __str__(self):
+        return repr(self)
+
     def __repr__(self):
-        return f'{self.color} pawn'
+        return f'{self.color[0]}{self.name[0]}'
 
 
 class Knight(Piece):
 
     is_sliding_piece = False
+    name = 'KNIGHT'
+    offsets = np.array([[1, 2],
+                        [2, 1],
+                        [-1, 2],
+                        [-2, -1],
+                        [-1, -2],
+                        [-2, 1],
+                        [1, -2],
+                        [2, -1]])
 
-    offsets = np.ndarray([[]])
+    def __str__(self):
+        return repr(self)
 
     def __repr__(self):
-        return f'{self.color} knight'
+        return f'{self.color[0]}{self.name[1]}'
 
 
 class King(Piece):
+
+    name = 'KING'
+
+    is_sliding_piece = False
+
+    offsets = np.array([[-1, 0],
+                        [1, 0],
+                        [0, -1],
+                        [0, 1],
+                        [1, 1],
+                        [1, -1],
+                        [-1, 1],
+                        [-1, -1]])
+
+    def __init__(self, color):
+        position = 'e1' if color == 'white' else 'e8'
+        super().__init__(color, position)
+
+    def __str__(self):
+        return repr(self)
+
     def __repr__(self):
-        return f'{self.color} king'
+        return f'{self.color[0]}{self.name[0]}'
 
 
 class Bishop(Piece):
+
+    name = 'BISHOP'
+
+    offsets = np.array([[1, 1],
+                        [-1, 1],
+                        [1, -1],
+                        [-1, -1]])
+
+    def __str__(self):
+        return repr(self)
+
     def __repr__(self):
-        return f'{self.color} bishop'
+        return f'{self.color[0]}{self.name[0]}'
