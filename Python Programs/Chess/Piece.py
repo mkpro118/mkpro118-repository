@@ -1,4 +1,4 @@
-# import numpy as np
+import numpy as np
 
 
 class Piece:
@@ -6,10 +6,17 @@ class Piece:
     Parent Class for all pieces
     Methods common to all pieces are defined here
 
-    <var> is_sliding_piece : Sliding Pieces are : King, Queen, Rook, Bishop and Pawn
+    <var> name -> string : Stores the name of the piece in order to differentiate pieces
+
+    <var> offsets -> numpy.ndarray : Stores the offsets which indiciate the very next position a piece can go to
+
+    <var> is_sliding_piece -> bool : Sliding Pieces are : King, Queen, Rook, Bishop and Pawn
     The only non sliding piece is the Knight
 
-    <var> color : Color of pieces indicate whether the pieces are friendly or not
+    <var> files -> dict : Maps the file value from string to an integer
+
+    <var> ranks -> dict : Maps the rank value from string to an integer
+    NOTE: Mapping is done in a manner such that when the board is printed on console, the board appears from white's perspective
 
     <func> possible_moves : Generates all possible moves for the pieces. This is overriden by the sub classes
 
@@ -23,8 +30,42 @@ class Piece:
 
     <func> is_target_unfriendly : Determines if the target square is occupied by a unfriendly piece.
     '''
+
+    name = None
+    offsets = None
     is_sliding_piece = True
-    color = 'white'
+
+    files = {
+        'a': 0,
+        'b': 1,
+        'c': 2,
+        'd': 3,
+        'e': 4,
+        'f': 5,
+        'g': 6,
+        'h': 7,
+    }
+
+    ranks = {
+        '1': 7,
+        '2': 6,
+        '3': 5,
+        '4': 4,
+        '5': 3,
+        '6': 2,
+        '7': 1,
+        '8': 0,
+    }
+
+    def __init__(self, color, current_position, is_sliding_piece=True):
+        self.is_sliding_piece = is_sliding_piece
+        self.color = color
+        self.current_position_as_string = current_position
+        self.current_position = np.array([ranks[current_position[0]], files[current_position[1]]])
+
+    def get_current_position(self):
+        return current_position_as_string
+
 
     def possible_moves(self, board_state):
         '''
@@ -100,22 +141,48 @@ class Piece:
 
 
 class Rook(Piece):
+
+    name = 'rook'
+
+    offsets = np.array([[-1, 0],
+                        [1, 0],
+                        [0, -1],
+                        [0, 1]])
+
     def __repr__(self):
-        return f'{self.color} rook'
+        return f'{self.color} {self.name}'
 
 
 class Queen(Piece):
+
+    name = 'queen'
+
+    offsets = np.array([[-1, 0],
+                        [1, 0],
+                        [0, -1],
+                        [0, 1],
+                        [1, 1],
+                        [1, -1],
+                        [-1, 1],
+                        [-1, -1]])
+
     def __repr__(self):
-        return f'{self.color} queen'
+        return f'{self.color} {self.name}'
+
+    def __init__(self, color, current_position):
+        super().__init__(color, current_position)
 
 
 class Pawn(Piece):
     def __repr__(self):
         return f'{self.color} pawn'
 
+
 class Knight(Piece):
 
-    isSlidingPiece = False
+    is_sliding_piece = False
+
+    offsets = np.ndarray([[]])
 
     def __repr__(self):
         return f'{self.color} knight'
