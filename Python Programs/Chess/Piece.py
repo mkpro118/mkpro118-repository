@@ -195,6 +195,16 @@ class Piece:
 
 
 class Rook(Piece):
+    '''
+    The white rooks start on squares a1 and h1, while the black rooks start on a8 and h8.
+    The rook moves horizontally or vertically, through any number of unoccupied squares.
+    The rook cannot jump over pieces.
+    The rook also participates, with the king, in a special move called castling.
+
+    <var> name -> string : Name of the piece
+
+    <var> offsets -> np.ndarray : Offsets indicate which direction the Rook can move in
+    '''
 
     name = 'ROOK'
 
@@ -211,6 +221,16 @@ class Rook(Piece):
 
 
 class Queen(Piece):
+    '''
+    The white queen start on squares d1, while the black queen start on d8.
+    The queen can be moved any number of unoccupied squares in a straight line vertically,
+    horizontally, or diagonally, thus combining the moves of the rook and bishop
+
+
+    <var> name -> string : Name of the piece
+
+    <var> offsets -> np.ndarray : Offsets indicate which direction the Queen can move in
+    '''
 
     name = 'QUEEN'
 
@@ -235,6 +255,17 @@ class Queen(Piece):
 
 
 class Pawn(Piece):
+    '''
+    The white pawns start on the second rank
+    Unlike the other pieces, pawns cannot move backwards.
+    Normally a pawn moves by advancing a single square, but the first time a pawn moves, it has the option of advancing two squares.
+    Pawns may not use the initial two-square advance to jump over an occupied square, or to capture.
+    Any piece immediately in front of a pawn, friend or foe, blocks its advance.
+
+    <var> name -> string : Name of the piece
+
+    <var> offsets -> np.ndarray : Offsets indicate which direction the Rook can move in
+    '''
 
     name = 'PAWN'
 
@@ -272,6 +303,16 @@ class Pawn(Piece):
 
 
 class Knight(Piece):
+    '''
+    The white knight start on squares b1 and g1, while the black knight start on b8 and g8.
+    Compared to other chess pieces, the knight's movement is unique: it may move two squares vertically and one square horizontally,
+    or two squares horizontally and one square vertically (with both forming the shape of an L).
+    This way, a knight can have a maximum of 8 moves. While moving, the knight can jump over pieces to reach its destination.
+
+    <var> name -> string : Name of the piece
+
+    <var> offsets -> np.ndarray : Offsets indicate which direction the Rook can move in
+    '''
 
     is_sliding_piece = False
     name = 'KNIGHT'
@@ -292,6 +333,19 @@ class Knight(Piece):
 
 
 class King(Piece):
+    '''
+    The white king start on squares e1, while the black king start on e8.
+    A king can move one square in any direction (horizontally, vertically, or diagonally),
+    unless the square is already occupied by a friendly piece, or the move would place the king in check.
+    As a result, opposing kings may never occupy adjacent squares (see opposition) to give check,
+    as that would put the moving king in check as well.
+    However, the king can give discovered check by unblocking a bishop, rook, or queen.
+    The king is also involved in the special move of castling.
+
+    <var> name -> string : Name of the piece
+
+    <var> offsets -> np.ndarray : Offsets indicate which direction the Rook can move in
+    '''
 
     name = 'KING'
 
@@ -318,6 +372,15 @@ class King(Piece):
 
 
 class Bishop(Piece):
+    '''
+    The white bishops start on squares c1 and f1, while the black bishops start on c8 and f8.
+    The bishop has no restrictions in distance for each move, but is limited to diagonal movement.
+    Bishops, like all other pieces except the knight, cannot jump over other pieces.
+
+    <var> name -> string : Name of the piece
+
+    <var> offsets -> np.ndarray : Offsets indicate which direction the Rook can move in
+    '''
 
     name = 'BISHOP'
 
