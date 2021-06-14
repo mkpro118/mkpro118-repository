@@ -1,8 +1,12 @@
 import numpy as np
-from Chess.Piece import Piece, King, Queen, Rook, Bishop, Knight, Pawn
-
-# USE THIS IMPORT STATEMENT IF YOU STORE THE TEST FILE ON THE SAME DIRECTORY AS THE OTHER FILES
-# from Piece import Piece, King, Queen, Rook, Bishop, Knight, Pawn
+from Chess.Piece import (Piece,
+                         King,
+                         Queen,
+                         Rook,
+                         Bishop,
+                         Knight,
+                         Pawn,
+                         Empty)
 
 files = {
     'a': 0,
@@ -73,7 +77,7 @@ for position in kings:
 
 for position in empty:
     file, rank = files[position[0]], ranks[position[1]]
-    board[rank, file] = np.array([rank, file])
+    board[rank, file] = Empty(position)
 
 
 board_ = ''
@@ -86,7 +90,9 @@ for row in board:
 
 # print(board_)
 
-a1_R = Pawn('white', 'e7')
+a1_R = Pawn('white', 'd4')
 # a1_R.set_current_position()
-for i in a1_R.possible_moves(board):
-    print(i)
+# for i in a1_R.possible_moves(board):
+#     print(i)
+
+print(a1_R.is_target_friendly(board, np.array([3, 3])))
