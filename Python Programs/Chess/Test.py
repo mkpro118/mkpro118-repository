@@ -1,6 +1,9 @@
 import numpy as np
 from Chess.Piece import Piece, King, Queen, Rook, Bishop, Knight, Pawn
 
+# USE THIS IMPORT STATEMENT IF YOU STORE THE TEST FILE ON THE SAME DIRECTORY AS THE OTHER FILES
+# from Piece import Piece, King, Queen, Rook, Bishop, Knight, Pawn
+
 files = {
     'a': 0,
     'b': 1,
