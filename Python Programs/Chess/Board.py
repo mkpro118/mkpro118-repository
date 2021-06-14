@@ -1,5 +1,11 @@
 import numpy as np
-from Piece import Pawn, Bishop, Knight, Rook, Queen, King
+from Piece import (Pawn,
+                   Bishop,
+                   Knight,
+                   Rook,
+                   Queen,
+                   King,
+                   Empty)
 
 
 class Board:
@@ -34,6 +40,7 @@ class Board:
         rooks = np.array(['a1', 'a8', 'h1', 'h8'])
         queens = np.array(['d1', 'd8'])
         kings = np.array(['e1', 'e8'])
+        empty = np.array([f'{x}{i}' for x in 'abcdefgh' for i in range(3, 7)])
 
         for position in pawns:
             file, rank = self.files[position[0]], self.ranks[position[1]]
@@ -58,19 +65,24 @@ class Board:
         for position in queens:
             file, rank = self.files[position[0]], self.ranks[position[1]]
             color = 'white' if position[1] == '1' else 'black'
-            self.board[rank, file] = Queen(color, position)
+            self.board[rank, file] = Queen(color)
 
         for position in kings:
             file, rank = self.files[position[0]], self.ranks[position[1]]
             color = 'white' if position[1] == '1' else 'black'
-            self.board[rank, file] = King(color, position)
+            self.board[rank, file] = King(color)
+
+        for position in empty:
+            file, rank = self.files[position[0]], self.ranks[position[1]]
+            self.board[rank, file] = Empty(position)
 
     def __repr__(self):
-        board_ = '-' * 39 + '\n'
+        board_ = '-' * 41 + '\n'
         for row in self.board:
+            board_ += '| '
             for col in row:
                 board_ += str(col) + ' | '
-            board_ += '\n' + '-' * 39
+            board_ += '\n' + '-' * 41
             board_ += '\n'
 
         return board_
