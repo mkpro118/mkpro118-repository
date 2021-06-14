@@ -1,5 +1,5 @@
 import numpy as np
-from Piece import Pawn, Bishop, King, Knight, Queen, Rook
+from Piece import Pawn, Bishop, Knight, Rook, Queen, King
 
 
 class Board:
@@ -26,7 +26,7 @@ class Board:
     }
 
     def __init__(self):
-        self.board = np.empty((8, 8), dtype='object')
+        self.board = np.full((8, 8), '  ', dtype='object')
 
         pawns = np.array([f'{i}2' for i in 'abcdefgh'] + [f'{i}7' for i in 'abcdefgh'])
         bishops = np.array(['c1', 'c8', 'f1', 'f8'])
@@ -36,41 +36,45 @@ class Board:
         kings = np.array(['e1', 'e8'])
 
         for position in pawns:
-            file, rank = position[0], position[1]
-            self.board[self.ranks[rank], self.files[file]] = 'wP' if rank == '2' else 'bP'
+            file, rank = self.files[position[0]], self.ranks[position[1]]
+            color = 'white' if position[1] == '2' else 'black'
+            self.board[rank, file] = Pawn(color, position)
 
         for position in bishops:
-            file, rank = position[0], position[1]
-            self.board[self.ranks[rank], self.files[file]] = 'wB' if rank == '1' else 'bB'
+            file, rank = self.files[position[0]], self.ranks[position[1]]
+            color = 'white' if position[1] == '1' else 'black'
+            self.board[rank, file] = Bishop(color, position)
 
         for position in knights:
-            file, rank = position[0], position[1]
-            self.board[self.ranks[rank], self.files[file]] = 'wN' if rank == '1' else 'bN'
+            file, rank = self.files[position[0]], self.ranks[position[1]]
+            color = 'white' if position[1] == '1' else 'black'
+            self.board[rank, file] = Knight(color, position)
 
         for position in rooks:
-            file, rank = position[0], position[1]
-            self.board[self.ranks[rank], self.files[file]] = 'wR' if rank == '1' else 'bR'
+            file, rank = self.files[position[0]], self.ranks[position[1]]
+            color = 'white' if position[1] == '1' else 'black'
+            self.board[rank, file] = Rook(color, position)
 
         for position in queens:
-            file, rank = position[0], position[1]
-            self.board[self.ranks[rank], self.files[file]] = 'wQ' if rank == '1' else 'bQ'
+            file, rank = self.files[position[0]], self.ranks[position[1]]
+            color = 'white' if position[1] == '1' else 'black'
+            self.board[rank, file] = Queen(color, position)
 
         for position in kings:
-            file, rank = position[0], position[1]
-            self.board[self.ranks[rank], self.files[file]] = 'wK' if rank == '1' else 'bK'
-
-        filt = self.board == None
-        self.board[filt] = '  '
+            file, rank = self.files[position[0]], self.ranks[position[1]]
+            color = 'white' if position[1] == '1' else 'black'
+            self.board[rank, file] = King(color, position)
 
     def __repr__(self):
-        board_ = ''
+        board_ = '-' * 39 + '\n'
         for row in self.board:
             for col in row:
-                board_ += col + ' | '
-            board_ += '\n' + '-' * 40
+                board_ += str(col) + ' | '
+            board_ += '\n' + '-' * 39
             board_ += '\n'
 
         return board_
+
 
 if __name__ == '__main__':
     board = Board()
