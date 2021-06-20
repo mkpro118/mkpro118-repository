@@ -42,3 +42,7 @@
  [                       ]
  [wP wP wP       wP wP wP]
  [wR wN wB    wK wB wN wR]]
+
+
+moves_list = ['e2', 'e4', 'f7','f6', 'd2', 'd4',
+              'g6', 'g5', 'd1', 'h5']
