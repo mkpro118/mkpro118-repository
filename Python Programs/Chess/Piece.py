@@ -57,7 +57,7 @@ class Piece:
         '8': 0,
     }
 
-    def __init__(self, color, current_position, is_sliding_piece=True):
+    def __init__(self, color, current_position):
         '''
         <param> color -> string : 'white' or 'black' indicating the color of the piece
 
@@ -70,8 +70,7 @@ class Piece:
         assert all([len(current_position) == 2,
                     current_position[0] in self.files,
                     current_position[1] in self.ranks]), 'Invalid Square'
-        assert isinstance(is_sliding_piece, bool), 'is_sliding_piece must be a True or False value'
-        self.is_sliding_piece = is_sliding_piece
+        assert isinstance(self.is_sliding_piece, bool), 'is_sliding_piece must be a True or False value'
         self.color = color
         self.current_position_as_string = current_position.lower()
         self.current_position = np.array([self.ranks[current_position[1]], self.files[current_position[0]]])
@@ -126,8 +125,7 @@ class Piece:
                 finally:
                     if self.name == 'KING' or self.name == 'PAWN' or self.name == 'KNIGHT':
                         break
-
-        yield from possible_moves
+        return possible_moves
 
     def move(self, board_state, where):
         '''
@@ -139,7 +137,14 @@ class Piece:
 
         Makes the move on the board.
         '''
-        pass
+        if self.is_move_legal(board_state, where):
+            target = [self.ranks[where[1]], self.files[where[0]]]
+            current_position = self.get_current_position()
+            board_state[current_position[0], current_position[1]] = Empty(where)
+            board_state[target[0], target[1]] = self
+            self.set_current_position(where)
+        else:
+            pass
 
     def is_move_legal(self, board_state, where):
         '''
@@ -149,11 +154,20 @@ class Piece:
 
         Checks the following (in order):
         1. If the target square is already occupied by any friendly piece
-        2. If the path to the target square is blocked by a friendl y or unfriendly piece
+        2. If the path to the target square is blocked by a friendly or unfriendly piece
         3. If the target square is covered by an unfriendly piece, and allow a capture if the piece on the target square isn't the king
         (To be added at the end, the special castling rules!)
         '''
-        pass
+        target = [self.ranks[where[1]], self.files[where[0]]]
+        try:
+            assert target in self.possible_moves(board_state), f'{self.name} cannot move to {where}'
+            assert not self.is_target_friendly(board_state, where), f"{where} is occupied by a friendly piece: {board_state[target[0],target[1]]}"
+            assert not self.is_path_blocked(board_state, where), f"{self.name}'s path to {where} is blocked"
+        except AssertionError as e:
+            print(e)
+            return False
+        else:
+            return True
 
     def is_path_blocked(self, board_state, where):
         '''
@@ -165,7 +179,32 @@ class Piece:
         '''
         if not self.is_sliding_piece:
             return False
-        pass
+        current_position = self.get_current_position()
+        target = np.array([self.ranks[where[1]], self.files[where[0]]])
+        diff = current_position - target
+        try:
+            m = int(diff[0]) / int(diff[1])
+        except ZeroDivisionError:
+            offsets = np.array([[-1, 0], [1, 0]])
+        else:
+            if m == 1:
+                offsets = np.array([[1, 1], [-1, -1]])
+            elif m == -1:
+                offsets = np.array([[-1, 1], [1, -1]])
+            elif m == 0:
+                offsets = np.array([[0, -1], [0, 1]])
+
+        while (current_position != target).any():
+            new_position1 = current_position + offsets[0]
+            new_position2 = current_position + offsets[1]
+            dist1 = np.sqrt(np.sum(np.square(new_position1 - target)))
+            dist2 = np.sqrt(np.sum(np.square(new_position2 - target)))
+            new_position = new_position1 if dist1 < dist2 else new_position2
+            if (target == new_position).all():
+                return False
+            if not isinstance(board_state[new_position[0], new_position[1]], Empty):
+                return True
+            current_position = new_position
 
     def is_target_friendly(self, board_state, where):
         '''
@@ -175,12 +214,11 @@ class Piece:
 
         Determines if the target square is already occupied by a friendly piece
         '''
-        rank, file = where[1], where[0]
-        if self.name != 'KING':
-            if isinstance(board_state[rank, file], Empty):
-                return False
-            else:
-                return board_state[rank, file].color == self.color
+        rank, file = self.ranks[where[1]], self.files[where[0]]
+        if isinstance(board_state[rank, file], Empty):
+            return False
+        else:
+            return board_state[rank, file].color == self.color
 
     def is_target_unfriendly(self, board_state, where):
         '''
@@ -190,7 +228,7 @@ class Piece:
 
         Determines if the target square is already occupied by an unfriendly piece
         '''
-        rank, file = where[1], where[0]
+        rank, file = self.ranks[where[1]], self.files[where[0]]
         if self.name != 'KING':
             if isinstance(board_state[rank, file], Empty):
                 return True
