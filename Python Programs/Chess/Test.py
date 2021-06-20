@@ -1,98 +1,65 @@
-import numpy as np
-from Chess.Piece import (Piece,
-                         King,
-                         Queen,
-                         Rook,
-                         Bishop,
-                         Knight,
-                         Pawn,
-                         Empty)
+from time import sleep
+from Board import Board
+import logging
 
-files = {
-    'a': 0,
-    'b': 1,
-    'c': 2,
-    'd': 3,
-    'e': 4,
-    'f': 5,
-    'g': 6,
-    'h': 7,
-}
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+file_handler = logging.FileHandler('test.log')
+formatter = logging.Formatter('%(message)s')
+file_handler.setFormatter(formatter)
+logger.addHandler(file_handler)
 
-ranks = {
-    '1': 7,
-    '2': 6,
-    '3': 5,
-    '4': 4,
-    '5': 3,
-    '6': 2,
-    '7': 1,
-    '8': 0,
-}
+board = Board()
+board = board.board
 
-board = np.full((8, 8), '  ', dtype='object')
-
-pawns = np.array([f'{i}2' for i in 'abcdefgh'] + [f'{i}7' for i in 'abcdefgh'])
-bishops = np.array(['c1', 'c8', 'f1', 'f8'])
-knights = np.array(['b1', 'b8', 'g1', 'g8'])
-rooks = np.array(['a1', 'a8', 'h1', 'h8'])
-queens = np.array(['d1', 'd8'])
-kings = np.array(['e1', 'e8'])
-empty = np.array([f'{x}{i}' for x in 'abcdefgh' for i in range(3, 7)])
-
-
-for position in pawns:
-    file, rank = files[position[0]], ranks[position[1]]
-    color = 'white' if position[1] == '2' else 'black'
-    board[rank, file] = Pawn(color, position)
-
-for position in bishops:
-    file, rank = files[position[0]], ranks[position[1]]
-    color = 'white' if position[1] == '1' else 'black'
-    board[rank, file] = Bishop(color, position)
-
-
-for position in knights:
-    file, rank = files[position[0]], ranks[position[1]]
-    color = 'white' if position[1] == '1' else 'black'
-    board[rank, file] = Knight(color, position)
-
-
-for position in rooks:
-    file, rank = files[position[0]], ranks[position[1]]
-    color = 'white' if position[1] == '1' else 'black'
-    board[rank, file] = Rook(color, position)
-
-
-for position in queens:
-    file, rank = files[position[0]], ranks[position[1]]
-    color = 'white' if position[1] == '1' else 'black'
-    board[rank, file] = Queen(color)
-
-
-for position in kings:
-    file, rank = files[position[0]], ranks[position[1]]
-    color = 'white' if position[1] == '1' else 'black'
-    board[rank, file] = King(color)
-
-for position in empty:
-    file, rank = files[position[0]], ranks[position[1]]
-    board[rank, file] = Empty(position)
-
-
-board_ = ''
-for row in board:
-    for col in row:
-        x = f'{col.get_current_position()}' if not isinstance(col, (str, np.ndarray)) else f'{col}'
-        board_ += x + ' | '
-    board_ += '\n' + '-' * 63
-    board_ += '\n'
+# board_ = ''
+# for row in board:
+#     for col in row:
+#         x = f'{col.get_current_position()}' if not isinstance(col, (str, np.ndarray)) else f'{col}'
+#         board_ += x + ' | '
+#     board_ += '\n' + '-' * 63
+#     board_ += '\n'
 
 # print(board_)
 
-a1_R = Pawn('white', 'd4')
-# a1_R.set_current_position()
-# for i in a1_R.possible_moves(board):
-#     print(i)
+# print(k.is_sliding_piece)
+# board[6, 0] = Empty('a2')
 
-print(a1_R.is_target_friendly(board, np.array([3, 3])))
+# Moving the e2 Pawn to e4
+k = board[6, 4]
+k.move(board, 'e4')
+logger.info(board)
+logger.info('')
+
+sleep(1.5)
+
+# Moving the f7 Pawn to f6
+k = board[1, 5]
+k.move(board, 'f6')
+logger.info(board)
+logger.info('')
+
+sleep(1.5)
+
+# Moving the d2 Pawn to d4
+k = board[6, 3]
+k.move(board, 'd4')
+logger.info(board)
+logger.info('')
+
+sleep(1.5)
+
+# Moving the g7 Pawn to g5
+k = board[1, 6]
+k.move(board, 'g5')
+logger.info(board)
+logger.info('')
+
+sleep(1.5)
+
+# Moving the d1 Queen to h5
+k = board[7, 3]
+k.move(board, 'h5')
+
+logger.info(board)
+logger.info('')
