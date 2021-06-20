@@ -137,14 +137,15 @@ class Piece:
 
         Makes the move on the board.
         '''
-        if self.is_move_legal(board_state, where):
+        check_move = self.is_move_legal(board_state, where)
+        if check_move[0]:
             target = [self.ranks[where[1]], self.files[where[0]]]
             current_position = self.get_current_position()
             board_state[current_position[0], current_position[1]] = Empty(where)
             board_state[target[0], target[1]] = self
             self.set_current_position(where)
         else:
-            pass
+            raise IllegalMoveError(check_move[1])
 
     def is_move_legal(self, board_state, where):
         '''
@@ -160,14 +161,14 @@ class Piece:
         '''
         target = [self.ranks[where[1]], self.files[where[0]]]
         try:
+            assert not isinstance(self, Empty), "There isn't any piece to move"
             assert target in self.possible_moves(board_state), f'{self.name} cannot move to {where}'
             assert not self.is_target_friendly(board_state, where), f"{where} is occupied by a friendly piece: {board_state[target[0],target[1]]}"
             assert not self.is_path_blocked(board_state, where), f"{self.name}'s path to {where} is blocked"
         except AssertionError as e:
-            print(e)
-            return False
+            return (False, e)
         else:
-            return True
+            return (True,)
 
     def is_path_blocked(self, board_state, where):
         '''
@@ -235,14 +236,6 @@ class Piece:
             else:
                 return not board_state[rank, file].color == self.color
 
-    def declare_illegal(self, where):
-        '''
-        <param> where -> string : The location of the target square eg. 'a1' or 'h8'
-
-        Gives an alert that the move is illegal
-        '''
-        pass
-
 
 class Rook(Piece):
     '''
@@ -262,6 +255,11 @@ class Rook(Piece):
                         [1, 0],
                         [0, -1],
                         [0, 1]])
+    image = 'rook.png'
+
+    def __init__(self, color, position):
+        super().__init__(color, position)
+        self.image = f'{color}-{self.image}'
 
     def __str__(self):
         return repr(self)
@@ -292,10 +290,12 @@ class Queen(Piece):
                         [1, -1],
                         [-1, 1],
                         [-1, -1]])
+    image = 'queen.png'
 
     def __init__(self, color):
         position = 'd1' if color == 'white' else 'd8'
         super().__init__(color, position)
+        self.image = f'{color}-{self.image}'
 
     def __str__(self):
         return repr(self)
@@ -321,10 +321,16 @@ class Pawn(Piece):
 
     is_sliding_piece = False
 
+    image = 'pawn.png'
+
     def __init__(self, color, current_position):
         super().__init__(color, current_position)
         self.has_moved = False
-        if color == 'white':
+        self.image = f'{color}-{self.image}'
+        self.set_offsets()
+
+    def set_offsets(self):
+        if self.color == 'white':
             if self.get_current_position_as_string()[1] != '2':
                 self.offsets = np.array([[-1, 0],
                                          [-1, 1],
@@ -366,6 +372,13 @@ class Knight(Piece):
 
     is_sliding_piece = False
     name = 'KNIGHT'
+
+    image = 'knight.png'
+
+    def __init__(self, color, position):
+        super().__init__(color, position)
+        self.image = f'{color}-{self.image}'
+
     offsets = np.array([[1, 2],
                         [2, 1],
                         [-1, 2],
@@ -401,6 +414,8 @@ class King(Piece):
 
     is_sliding_piece = False
 
+    image = 'king.png'
+
     offsets = np.array([[-1, 0],
                         [1, 0],
                         [0, -1],
@@ -413,6 +428,7 @@ class King(Piece):
     def __init__(self, color):
         position = 'e1' if color == 'white' else 'e8'
         super().__init__(color, position)
+        self.image = f'{color}-{self.image}'
 
     def __str__(self):
         return repr(self)
@@ -439,6 +455,12 @@ class Bishop(Piece):
                         [1, -1],
                         [-1, -1]])
 
+    image = 'bishop.png'
+
+    def __init__(self, color, position):
+        super().__init__(color, position)
+        self.image = f'{color}-{self.image}'
+
     def __str__(self):
         return repr(self)
 
@@ -455,6 +477,8 @@ class Empty(Piece):
 
     offsets = None
 
+    image = 'empty.png'
+
     def __init__(self, position):
         super().__init__('white', position)
         self.color = None
@@ -464,3 +488,11 @@ class Empty(Piece):
 
     def __repr__(self):
         return '  '
+
+
+class IllegalMoveError(Exception):
+    def __init__(self, *args):
+        self.message = f'THIS MOVE IS ILLEGAL!!!\n{args[0]}'
+
+    def __str__(self):
+        return self.message
