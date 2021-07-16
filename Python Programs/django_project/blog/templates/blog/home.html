@@ -9,7 +9,7 @@
   {% endif %}
   {% for post in posts %}
   	<article name="article-{{post.id}}" class="media content-section bg-dark text-white border-secondary">
-      <img name="img-{{post.author.profile.image.url}}" class="rounded-circle article-img" src="{{ post.author.profile.image.url }}">
+      <img name="img-{{post.author.profile.image.url}}" class="rounded-circle article-img" src="{{ post.author.profile.image.url }}" draggable="false">
       <div name="media-body" class="media-body bg-dark text-white">
         <div name="article-metadata" class="article-metadata bg-dark text-white">
           <a name="author" class="mr-2 text-info" href="{% url 'user-posts' post.author.username %}">@{{ post.author }}</a>
@@ -29,26 +29,21 @@
         </div>
       <div class="d-flex flex-column justify-content-end">
       <div class="bg-dark text-white">
-        <form action="{% url 'like_post' post.id %}" method="POST">
+        <form id="form" data-url="{% url 'like_post' post.id %}" data-id="{{ post.id }}">
           {% csrf_token %}
           {% if post.is_liked %}
-            <button type="submit" name="post_id" value="{{ post.id }}" class="btn btn-outline-secondary btn-md ml-2 mt-2 mb-1 mr-0" >
+            <button type="submit" name="post_id" value="{{ post.id }}" class="btn btn-outline-secondary btn-md ml-2 mt-2 mb-1 mr-0" draggable="false">
               💔
             </button>
           {% else %}
-            <button type="submit" name="post_id" value="{{ post.id }}" class="btn btn-outline-danger btn-md ml-2 mt-2 mb-1 mr-0" >
+            <button type="submit" name="post_id" value="{{ post.id }}" class="btn btn-outline-danger btn-md ml-2 mt-2 mb-1 mr-0" draggable="false">
             ❤
           </button>
           {% endif %}
         </form>
       </div>
       <div name="likes" class="bg-dark text-sm-secondary mt-1 mr-2 ml-1">
-        {{ post.total_likes }}
-        {% if post.likes.count == 1%}
-          Like
-        {% else %}
-          Likes
-        {% endif %}
+        <span id="{{ post.id }}">{{ post.total_likes }}</span> Likes
       </div>
     </div>
     </article>
@@ -79,4 +74,97 @@
 
     {% endif %}
   </div>
+  {% if user.is_authenticated %}
+    <script type="text/javascript">
+      let liked_btn, unliked_btn
+
+      window.onload = loaded => {
+        liked_btn = document.createElement('button')
+        liked_btn.innerText = '💔'
+        liked_btn.type = 'submit'
+        liked_btn.name = 'post_id'
+        liked_btn.draggable = false
+        liked_btn.className = 'btn btn-outline-secondary btn-md ml-2 mt-2 mb-1 mr-0'
+        unliked_btn = document.createElement('button')
+        unliked_btn.innerText = '❤'
+        unliked_btn.type = 'submit'
+        unliked_btn.name = 'post_id'
+        unliked_btn.draggable = false
+        unliked_btn.className = 'btn btn-outline-danger btn-md ml-2 mt-2 mb-1 mr-0'
+        document.querySelectorAll('#form').forEach(f => {
+          f.addEventListener('submit', e => {
+            e.preventDefault()
+            info = {
+              url: f.dataset.url,
+              id: f.dataset.id,
+              token: getCookie('csrftoken')
+            }
+            like(f, info)
+          })
+        })
+
+      }
+
+      function like(form, info) {
+        fetch(info.url, {
+          method: "POST",
+          credentials: "same-origin",
+          headers: {
+            "X-CSRFToken": info.token,
+            "Accept": "application/json",
+            'X-Requested-With': 'XMLHttpRequest',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            post_id: info.id
+          })
+        }).then(res => {
+          return res.json()
+        }).then(data => {
+          if (data.is_liked) {
+            const btn = form.querySelector('button')
+            const parent = btn.parentNode
+            const newbtn = liked_btn.cloneNode(true)
+            newbtn.value = data.id
+            parent.replaceChild(newbtn, btn)
+          }
+          else {
+            const btn = form.querySelector('button')
+            const parent = btn.parentNode
+            const newbtn = unliked_btn.cloneNode(true)
+            newbtn.value = data.id
+            parent.replaceChild(newbtn, btn)
+          }
+          document.querySelector(`span[id='${data.id}']`).innerText = data.number
+        })
+      }
+
+      function getCookie(cname) {
+        let name = cname + "=";
+        let decodedCookie = decodeURIComponent(document.cookie);
+        let ca = decodedCookie.split(';');
+        for(let i = 0; i <ca.length; i++) {
+          let c = ca[i];
+          while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+          }
+          if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+          }
+        }
+        return "";
+      }
+    </script>
+
+  {% else %}
+    <script type="text/javascript">
+      window.onload = () => {
+        document.querySelectorAll('#form').forEach(f => {
+          f.addEventListener('submit', e => {
+            f.action = f.dataset.url
+          })
+        })
+      }
+    </script>
+  {% endif %}
 {% endblock content %}
