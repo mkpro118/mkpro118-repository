@@ -4,7 +4,7 @@ from psutil import Process
 
 
 def cur_mem():
-    return Process(getpid()).memory_info().rss / 1024
+    return Process(getpid()).memory_info().rss / (1024 ** 2)
 
 
 def track_time(func):
