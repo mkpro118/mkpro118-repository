@@ -1,5 +1,4 @@
-from .base import Layer
-from .activation import Activation
+from .base import Layer, Activation
 import numpy as np
 
 
