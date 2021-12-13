@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <meta name="language" content="english">
+        <meta name="author" content="Mrigank Kumar">
+        <meta name="description" content="Play Sudoku!">
+        <meta name="keywords" content="Play, Neon, Sudoku">
+        <meta name="owner" content="Mrigank Kumar">
+        <meta name="distribution" content="Global">
+        <meta name="rating" content="General">
+        <meta name="apple-mobile-web-app-title" content="Neon Sudoku">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-touch-fullscreen" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="blue">
+        <meta name="HandheldFriendly" content="true">
+        <meta property="og:site_name" content="Neon Sudoku">
+        <meta property="og:title" content="Neon Sudoku">
+        <meta property="og:url" content="">
+        <meta property="og:image" content="./favicon.ico">
+        <meta property="og:image_height" content="200">
+        <meta property="og:image_width" content="200">
+        <title>Neon Sudoku</title>
+        <link rel="stylesheet" href="./sudoku.css">
+        <script type="text/javascript" src="./render-sudoku.js" defer></script>
+        <script type="text/javascript" src="./load-problem.js" defer></script>
+        <script type="text/javascript" src="./timer-sudoku.js" defer></script>
+        <script type="text/javascript" src="./select-square.js" defer></script>
+        <script type="text/javascript" src="./fill-square.js" defer></script>
+        <script type="text/javascript" src="./client-side-validation.js" defer></script>
+        <script type="text/javascript" src="./new-game.js" defer></script>
+        <script type="text/javascript" src="./avoid-errors.js" defer></script>
+    </head>
+    <body>
+        <noscript>
+            <section class="page-container">
+                Cannot Render Without Javascript
+            </section>
+        </noscript>
+        <section class="page-container">
+            <aside style="margin-bottom:1%; color: #DDD;font-size:1.8rem;letter-spacing:-0.1420rem;">
+                <span></span><span style="margin-left:20px;">0 S</span>
+            </aside>
+            <main class="main-content">
+                <sudoku-board>
+                    <section class="win">
+                        <div class="result-container">
+                            <h1>Excellent !</h1>
+                            <span id="difficulty">Difficulty</span>
+                            <span id="difficulty-val"></span>
+                            <hr>
+                            <span id="time">Time</span>
+                            <span id="time-val"></span>
+                        </div>
+                        <span id="new" style="font-size:1.4rem;padding: 0.6em 0.6em;background: hsl(200 64% 69%);">
+                            New Game!
+                        </span>
+                    </section>
+                </sudoku-board>
+            </main>
+            <section class="numbers">
+                <game-numbers>
+
+                </game-numbers>
+            </section>
+            <footer class="tools">
+                <game-tools>
+
+                </game-tools>
+            </footer>
+        </section>
+    </body>
+</html>

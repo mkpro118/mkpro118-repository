@@ -1,0 +1,463 @@
+:root{
+  --text-color: #3DB5FF;
+  --bg-color: #555;
+  --blue: rgba(0, 170, 255, 1);
+  --faded-blue: rgba(0, 170, 255, 0.75);
+  --pink: #FFC0CB;
+  --violet: #CF9FFF;
+  --white: #E6E6E6;
+
+  background: #000;
+}
+
+*::before,
+*::after{
+  position: absolute;
+  content: "";
+  pointer-events: none;
+}
+
+nav {
+  margin-left: auto;
+  margin-right: auto;
+  width: 75vw;
+  height: 95vh;
+  display: grid;
+  grid-template-rows: repeat(3, 1fr);
+  grid-template-columns: repeat(3, 1fr);
+  justify-content: center;
+  align-items: center;
+  grid-gap: 20px;
+}
+
+a{
+  text-align: center;
+}
+
+.btn{
+  font-family: Georgia, monospace;
+  font-weight: 400;
+  font-size: 3rem;
+  text-decoration: none;
+  background: var(--bg-color);
+  color: white;
+  padding: 0.3em 0.7em;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  position: relative;
+}
+
+.btn.nine,
+.btn.seven,
+.btn.six,
+.btn.four,
+.btn.three,
+.btn.two,
+.btn.one{
+  z-index:1;
+}
+
+.btn.one::before{
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--faded-blue);
+  height: 100%;
+  width: 100;
+  z-index: -1;
+  transition-property: transform, border-radius;
+  transition-duration: 1s;
+  transition-timing-function: ease-out;
+  transform: scale(0);
+  transform-origin: center;
+  border-radius: 50%;
+}
+
+.btn.one:hover::before{
+  transform: scale(1);
+  border-radius: 0%;
+}
+
+.btn.two::before{
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: var(--faded-blue);
+  z-index: -1;
+  height: 100%;
+  width: 100%;
+  transition: transform 1s ease-in-out;
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+.btn.two:hover::before{
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+.btn.four::before{
+  bottom: 0;
+  left: 0;
+  height: 6.9%;
+  width: 100%;
+  z-index: -1;
+  background: var(--faded-blue);
+  transition: transform 1s ease-in-out;
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+.btn.four:hover::before{
+  transform: scaleX(1);
+}
+
+.btn.three::before,
+.btn.three::after{
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
+  perspective: 500px;
+  background: var(--faded-blue);
+  transition: transform 1s linear;
+  transform: rotateX(-90deg);
+  transform-origin: center;
+  transform-style: preserve-3d;
+}
+
+.btn.three:hover::before{
+  transform: rotateX(0deg);
+  transform-style: preserve-3d;
+}
+
+.btn.three::after{
+  background: var(--bg-color);
+  perspective: 500px;
+  transition: transform 1s linear;
+  transform: rotateX(0deg);
+  transform-style: preserve-3d;
+  transform-origin: center;
+}
+
+.btn.three:hover::after{
+  transform: rotateX(90deg);
+  transform-style: preserve-3d;
+}
+
+.btn.five{
+  position: relative;
+}
+
+.btn.five span{
+  display: inline-block;
+  position: absolute;
+  background: var(--faded-blue);
+  transition: transform 0.3s linear;
+  pointer-events: none;
+}
+
+.btn.five span:nth-child(1){
+  left: 0;
+  bottom: 0;
+  height: 100%;
+  width: 4.5px;
+  transform: scaleY(0);
+  transform-origin: bottom;
+  transition-delay: 0.45s;
+}
+
+.btn.five:hover span:nth-child(1),
+.btn.five:hover span:nth-child(2){
+  transition-delay: 0s;
+  transform: scaleY(1);
+}
+
+.btn.five span:nth-child(2){
+  right: 0;
+  bottom: 0;
+  height: 100%;
+  width: 4.5px;
+  transform: scaleY(0);
+  transform-origin: top;
+  transition-delay: 0.45s;
+}
+
+.btn.five span:nth-child(3){
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 4.5px;
+  transform: scaleX(0);
+  transform-origin: left;
+}
+
+.btn.five span:nth-child(4){
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 4.5px;
+  transform: scaleX(0);
+  transform-origin: right;
+}
+
+.btn.five:hover span:nth-child(3),
+.btn.five:hover span:nth-child(4){
+  transition-delay: 0.45s;
+  transform: scaleX(1);
+}
+
+.btn.six span{
+  position: absolute;
+  height: 50%;
+  width: 25%;
+  background: var(--faded-blue);
+  z-index: -1;
+  transition: opacity 0.25s linear;
+  opacity: 0;
+}
+
+.btn.six:hover span{
+  opacity: 1;
+}
+
+.btn.six span:nth-child(1) {
+  top:0;
+  left:0;
+}
+
+.btn.six span:nth-child(8) {
+  bottom:0;
+  left:75%;
+}
+
+.btn.six span:nth-child(3) {
+  top:0;
+  left:50%;
+}
+
+.btn.six span:nth-child(6) {
+  bottom:0;
+  left:25%;
+}
+
+.btn.six span:nth-child(3),
+.btn.six span:nth-child(6){
+  transition-delay:0.25s;
+}
+
+.btn.six span:nth-child(2) {
+  top:0;
+  left:25%;
+}
+
+.btn.six span:nth-child(7) {
+  bottom:0;
+  left:50%;
+}
+
+.btn.six span:nth-child(2),
+.btn.six span:nth-child(7){
+  transition-delay:0.5s;
+}
+
+.btn.six span:nth-child(4) {
+  top:0;
+  left:75%;
+}
+
+.btn.six span:nth-child(5) {
+  bottom:0;
+  left:0;
+}
+
+.btn.six span:nth-child(4),
+.btn.six span:nth-child(5){
+  transition-delay:0.75s;
+}
+
+
+.btn.seven::before{
+  top:0;
+  left:0;
+  bottom: 0;
+  right: 0;
+  width:100%;
+  height: 100%;
+  background: linear-gradient(45deg, var(--blue), var(--pink), var(--faded-blue), var(--violet), var(--faded-blue), var(--pink), var(--blue));
+  background-size: 400%;
+  filter: blur(10px);
+  opacity: 0;
+  z-index: -3;
+  animation: glow 10s forwards linear infinite;
+  transition: opacity 0.5s linear;
+}
+
+.btn.seven:hover::before{
+  opacity: 1;
+}
+
+.btn.seven::after{
+  top: 0.1em;
+  left:  0.1em;
+  right: 0.1em;
+  bottom: 0.1em;
+  background: var(--bg-color);
+  z-index: -1;
+}
+
+@keyframes glow{
+  from{
+    background-position: 0 0;
+  }
+
+  to {
+    background-position: 400% 0;
+  }
+}
+
+.btn.eight{
+  overflow: hidden;
+  max-height: 55px;
+}
+
+.btn.eight span{
+  position: relative;
+  display: block;
+  height: 100%;
+  width: 100%;
+  z-index: 5;
+}
+
+.btn.eight span:nth-child(1) {
+  margin-bottom: 5px;
+}
+
+.btn.eight span:nth-child(2) {
+  margin-top: 10px;
+}
+
+.btn.eight:hover span{
+  transition: transform 1s ease-in-out;
+  transform: translateY(-118.5%);
+}
+
+.btn.eight::before{
+  background: var(--faded-blue);
+  bottom: 84px;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 400px;
+  width: 400px;
+  border-radius: 50%;
+  transition: transform 1s ease-in-out;
+}
+
+.btn.eight:hover::before{
+  transform: translateX(-50%) translateY(55%);
+}
+
+.btn.nine{
+  overflow: hidden;
+  transition: box-shadow linear;
+  transition-duration: 0.5s;
+}
+
+.btn.nine:hover{
+  transition-duration: 0.2s;
+  transition-delay: 1.1s;
+  box-shadow: 0 0 30px var(--faded-blue);
+}
+
+.btn.nine span{
+  position: absolute;
+}
+
+.btn.nine span:nth-child(1) {
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 5px;
+  background: linear-gradient(to right, transparent, var(--faded-blue));
+  transition: left linear;
+  transition-duration: 0s;
+  transition-delay: 0.75s;
+}
+
+.btn.nine:hover span:nth-child(1){
+  transition-duration: 0.5s;
+  transition-delay: 0s;
+  left: 100%;
+}
+
+.btn.nine span:nth-child(2) {
+  right: 0;
+  top: -100%;
+  width: 5px;
+  height: 100%;
+  background: linear-gradient(to bottom, transparent, var(--faded-blue));
+  transition: top linear;
+  transition-duration: 0s;
+  transition-delay: 0.5s;
+}
+
+.btn.nine:hover span:nth-child(2){
+  transition-duration: 0.5s;
+  transition-delay: 0.25s;
+  top: 100%;
+}
+
+.btn.nine span:nth-child(3) {
+  bottom: 0;
+  right: -100%;
+  width: 100%;
+  height: 5px;
+  background: linear-gradient(to left, transparent, var(--faded-blue));
+  transition: right linear;
+  transition-duration: 0s;
+  transition-delay: 0.25s;
+}
+
+.btn.nine:hover span:nth-child(3){
+  transition-duration: 0.5s;
+  transition-delay: 0.5s;
+  right: 100%;
+}
+
+.btn.nine span:nth-child(4) {
+  bottom: -100%;
+  left: 0;
+  width: 5px;
+  height: 100%;
+  background: linear-gradient(to top, transparent, var(--faded-blue));
+  transition: bottom linear;
+  transition-duration: 0s;
+  transition-delay: 0s;
+}
+
+.btn.nine:hover span:nth-child(4){
+  transition-duration: 0.5s;
+  transition-delay: 0.75s;
+  bottom: 100%;
+}
+
+.btn.nine::before{
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--faded-blue);
+  z-index: -1;
+  opacity: 0;
+  transition: opacity linear;
+  transition-duration: 0.5s;
+}
+
+.btn.nine:hover::before{
+  transition-duration: 0.2s;
+  transition-delay: 1.1s;
+  opacity: 0.69;
+}

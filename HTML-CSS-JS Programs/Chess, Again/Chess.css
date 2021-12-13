@@ -1,0 +1,179 @@
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    user-select: none;
+}
+
+:root {
+    height: 100%;
+    width: 100%;
+
+}
+
+
+body {
+    height: 100%;
+    width: 100%;
+    background: hsl(0, 0%, 25%);
+    color: hsl(0, 0%, 30%);
+    font-size: clamp(16px, (calc(100vw / 62)), 1.6vw);
+    grid-template-rows: 1fr;
+    grid-template-columns: 1fr 5fr 3fr;
+    position: relative;
+}
+
+.disabled-js {
+    color: hsl(0, 0%, 85%);
+    position: absolute;
+    inset: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+main {
+    padding: 5px;
+    position: absolute;
+    inset: 0;
+    height: 100vh;
+    max-height: 100vh;
+    right: 33%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
+aside {
+    position: absolute;
+    inset: 0;
+    left: 67%;
+}
+
+chess-board {
+    aspect-ratio: 1 / 1 !important;
+    display: grid;
+    height: clamp(60%, 95%, 100%);
+    grid-template-rows: repeat(8, 1fr);
+    grid-template-columns: repeat(8, 1fr);
+    border-radius: 5px;
+    position: relative;
+    z-index: 1;
+    transform: var(--rotate, 0turn);
+    transform-origin: center;
+    transition: transform 800ms ease;
+    gap: 0px;
+}
+
+chess-board.flipped {
+    --rotate: rotate(0.5turn);
+    transform-origin: center;
+    transition: transform 800ms ease;
+}
+
+chess-board > span {
+    position: absolute;
+    z-index: 2;
+    font-size: clamp(14px, 16px, 18px);
+}
+
+chess-board > span.ranks-text {
+    inset: 0;
+    left: 0;
+    right: 96.875%;
+    display: flex;
+    font-size: clamp(14px, 18px);
+    justify-content: space-around;
+    align-items: center;
+    flex-direction: column;
+}
+
+chess-board > span.ranks-text > span {
+    margin-bottom: auto;
+    margin-top: 4px;
+    font-weight: 800;
+}
+
+chess-board.flipped > span.ranks-text {
+    right: 0;
+    left: 96.875%;
+}
+
+chess-board.flipped > span/* .ranks-text */ > span {
+    transform: rotate(0.5turn);
+}
+
+chess-board > span.files-text {
+    inset: 0;
+    bottom: 0;
+    top: 96.875%;
+    display: flex;
+    justify-content: safe;
+    align-items: center;
+    flex-direction: row;
+}
+
+chess-board > span.files-text > span {
+    margin-left: auto;
+    margin-right: 4px;
+    font-weight: 800;
+}
+
+chess-board.flipped > span.files-text {
+    top: 0;
+    bottom: 96.875%;
+}
+
+.chess-square {
+    aspect-ratio: 1 / 1;
+    background: var(--color, green);
+    display: grid;
+    place-items: center;
+    position: relative;
+}
+
+light-square {
+    --color: hsl(208, 35%, 62%);
+}
+
+
+dark-square {
+    --color: hsl(207, 36%, 45%);
+}
+
+.highlight-layer {
+    position: absolute;
+    inset: 0;
+    background: transparent;
+    z-index: 7;
+}
+
+.highlight-layer.highlight {
+    background: radial-gradient(circle at center, transparent 69%, teal 90%);
+}
+
+.check-highlight-layer {
+    position: absolute;
+    inset: 0;
+    background: transparent;
+    z-index: 6;
+}
+
+.check-highlight-layer.under-check {
+    background: radial-gradient(circle at center, red 5%, transparent 60%);
+}
+
+chess-piece {
+    position: fixed;
+    /* inset: 0; */
+    height: 12.5%;
+    aspect-ratio: 1 / 1;
+    background-position: center;
+    background-size: contain;
+    z-index: var(--z, 8);
+    cursor: var(--cursor, grab);
+    transform: translate(var(--x, 0), var(--y, 0));
+}
