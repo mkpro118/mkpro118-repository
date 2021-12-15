@@ -67,10 +67,10 @@ class MQ {
         return _
     }
 
-    css(p, v) {
+    css(p, v, i) {
         if (!p || !v) throw new MQIllegalArguementError("Poperty and Value must be specified")
         for(let _ of this.#nl) {
-            _.css(p, v)
+            _.css(p, v, i)
         }
     }
 
@@ -146,10 +146,10 @@ class NodeWrapper {
         return this
     }
 
-    css(p, v) {
+    css(p, v, i) {
         if (!p) return this.n.style
         if (!v) return getComputedStyle(this.n).getPropertyValue(`${p}`)
-        this.n.style.setProperty(`${p}`, `${v}`)
+        this.n.style.setProperty(`${p}`, `${v}`, i)
         return this
     }
 
