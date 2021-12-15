@@ -93,6 +93,23 @@ class MQ {
             _.css(p, v)
         }
     }
+
+    click() {return this.each(e => e.click())}
+
+    html(t) {
+        if (!t) throw new MQIllegalArguementError("No arguments specified for NodeWrapper.html(t)")
+        return this.each(e => e.html(t))
+    }
+
+    text(t) {
+        if (!t) throw new MQIllegalArguementError("No arguments specified for NodeWrapper.text(t)")
+        return this.each(e => e.text(t))
+    }
+
+    on(e,c,u) {return this.each(q => q.on(e, c, u))}
+    appendTo(n) {return this.each(e => e.appendTo(n))}
+    addClass(...c) {return this.each(e => e.addClass(...c))}
+    removeClass(...c) {return this.each(e => e.removeClass(...c))}
 }
 
 class NodeWrapper {
@@ -128,7 +145,8 @@ class NodeWrapper {
     }
 
     on(e, c, u) {
-        if (!e || !c) throw new Exception("Cannot bind event")
+        if (!e || !c) throw new MQEventBindError(`Cannot bind callback ${c} to event ${e}`)
+        if (typeof c !== 'function') throw new MQEventBindError(`Cannot bind callback ${c} to event ${e}, because ${c} is not a function`)
         this.n.addEventListener(e, c, u)
         return this
     }
@@ -148,6 +166,7 @@ class NodeWrapper {
     appendTo(n) {
         let k
         if (typeof n === 'string') k = (new MQ(n, {__str__:true})).get()
+        else if (n instanceof NodeWrapper) k = n.get()
         else k = n
         k.appendChild(this.n)
         return this
@@ -160,6 +179,7 @@ class NodeWrapper {
         for(let _ of c) {
             this.n.classList.add(_)
         }
+        return this
     }
 
     removeClass(...c) {
@@ -167,6 +187,7 @@ class NodeWrapper {
         for(let _ of c) {
             this.n.classList.remove(_)
         }
+        return this
     }
 
     find(n) {
@@ -174,6 +195,20 @@ class NodeWrapper {
             const _ = this.n.querySelector(`${n}`)
             if (_) return new NodeWrapper(_)
             return null
+        } else {
+            throw new MQIllegalArguementError("Can only find by by CSS Selector")
+        }
+    }
+
+    contains(n) {
+        if (n instanceof NodeWrapper) {
+            return this.n.contains(n.get())
+        }
+        else if (n instanceof HTMLElement) {
+            return this.n.contains(n)
+        }
+        else {
+            throw new MQIllegalArguementError("contains can only find HTMLElement or NodeWrapper objects")
         }
     }
 
@@ -205,6 +240,7 @@ class MQError extends Error {
 }
 
 class MQInvalidSelectorError extends MQError {}
+class MQEventBindError extends MQError {}
 class MQIllegalArguementError extends MQError {}
 class MQIndexOutOfBoundsError extends MQError {}
 class MQElementCreationError extends MQError {}
