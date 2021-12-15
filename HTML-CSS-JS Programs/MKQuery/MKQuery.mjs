@@ -42,24 +42,14 @@ class MQ {
         return this.#nl.length == 1 ? this.first() : this
     }
 
-    first() {return this.#nl[0]}
-
-    last() {return this.#nl[this.#nl.length - 1]}
-
-    nth(n) {
-        n = parseInt(n)
-        if (isNaN(n)) throw new MQIllegalArguementError("Illegal Argument")
-        n += n < 0 ? this.#nl.length : 0
-        if (!(0 < n < this.#nl.length)) throw new MQIndexOutOfBoundsError("Index Out Of Bounds")
-        return this.#nl[n]
-    }
-
-    each(c) {
-        if (typeof c !== 'function') throw new MQIllegalArguementError("Illegal Argument")
-        for(let _ of this.#nl) {
-            c(_)
+    [Symbol.iterator]() {
+        let _ = 0
+        return {
+            next: () => {
+                if (_ == this.#nl.length) return {done: true}
+                return { done: false, value: this.#nl[_++]}
+            }
         }
-        return this
     }
 
     static __create__(n, o) {
@@ -77,24 +67,12 @@ class MQ {
         return _
     }
 
-    #wrap() {
-        this.#nl = this.#nl.map(_ => new NodeWrapper(_))
-    }
-
-    * list() {
-            yield* this.#nl
-    }
-
-    length() {return this.#nl.length}
-
     css(p, v) {
         if (!p || !v) throw new MQIllegalArguementError("Poperty and Value must be specified")
         for(let _ of this.#nl) {
             _.css(p, v)
         }
     }
-
-    click() {return this.each(e => e.click())}
 
     html(t) {
         if (!t) throw new MQIllegalArguementError("No arguments specified for NodeWrapper.html(t)")
@@ -106,9 +84,40 @@ class MQ {
         return this.each(e => e.text(t))
     }
 
+    nth(n) {
+        n = parseInt(n)
+        if (isNaN(n)) throw new MQIllegalArguementError("Illegal Argument")
+        n += n < 0 ? this.#nl.length : 0
+        if (!(0 < n < this.#nl.length)) throw new MQIndexOutOfBoundsError("Index Out Of Bounds")
+        return this.#nl[n]
+    }
+
+    each(c) {
+        if (typeof c !== 'function') throw new MQIllegalArguementError("Illegal Argument")
+        for(let _ of this.#nl) {
+            c(_)
+        }
+        return this
+    }
+
+    first() {return this.#nl[0]}
+
+    last() {return this.#nl[this.#nl.length - 1]}
+
+    #wrap() {this.#nl = this.#nl.map(_ => new NodeWrapper(_))}
+
+    list() {return this.#nl}
+
+    length() {return this.#nl.length}
+
+    click() {return this.each(e => e.click())}
+
     on(e,c,u) {return this.each(q => q.on(e, c, u))}
+
     appendTo(n) {return this.each(e => e.appendTo(n))}
+
     addClass(...c) {return this.each(e => e.addClass(...c))}
+
     removeClass(...c) {return this.each(e => e.removeClass(...c))}
 }
 
@@ -230,21 +239,32 @@ class NodeWrapper {
         })
     }
 
-    list() {
-        return [this]
+    list() {return [this]}
+
+    attr(a, v) {
+        if (!a) return this.n.dataset
+        if (!v) return this.n.dataset[`${a}`]
+        this.n.dataset[`${a}`] = v
+        return this
+    }
+
+    each() {
+        if (typeof c !== 'function') throw new MQIllegalArguementError("Illegal Argument")
+        c(this)
+        return this
     }
 }
 
 class MQError extends Error {
-  constructor(message) {
-    super(message);
-    this.name = this.constructor.name;
-    if (typeof Error.captureStackTrace === 'function') {
-      Error.captureStackTrace(this, this.constructor);
-    } else {
-      this.stack = (new Error(message)).stack;
+    constructor(message) {
+        super(message);
+        this.name = this.constructor.name;
+        if (typeof Error.captureStackTrace === 'function') {
+            Error.captureStackTrace(this, this.constructor);
+        } else {
+            this.stack = (new Error(message)).stack;
+        }
     }
-  }
 }
 
 class MQInvalidSelectorError extends MQError {}
