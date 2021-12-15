@@ -218,7 +218,15 @@ class NodeWrapper {
         return new Proxy(t, {
             get: (_t, p, r) => {
                 return (p in _t) ? _t[p] : t.n[p]
-            }
+            },
+            set: (_t, p, v, r) => {
+                if (p in _t) {
+                    _t[p] = v
+                }
+                else {
+                    t[p] = v
+                }
+            },
         })
     }
 
