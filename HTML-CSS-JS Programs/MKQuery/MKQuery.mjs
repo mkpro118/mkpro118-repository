@@ -1,6 +1,16 @@
 export default function $(args, options={}) {
-    if (typeof args === 'string')
+    if (typeof args === 'string') {
         options.__str__ = true
+    }
+    else if (typeof args === 'function') {
+        if (!('on' in options)) {
+            options.on = 'load'
+        }
+        if (!('useCapture' in options)) {
+            options.useCapture = false
+        }
+        window.addEventListener(options.on, args, options.useCapture)
+    }
     else {
         options.__str__ = false
         if (args.__isProxy) {
@@ -129,6 +139,17 @@ class NodeWrapper {
         return NodeWrapper.#proxify(this)
     }
 
+    [Symbol.iterator]() {
+        let _ = false
+        return {
+            next: () => {
+                if (_) return {done: true}
+                _ = true
+                return { done: false, value: this}
+            }
+        }
+    }
+
     click() {
         this.n.click()
         return this
@@ -143,6 +164,13 @@ class NodeWrapper {
     text(t) {
         if (!t) return this.n.innerText
         this.n.innerText = `${t}`
+        return this
+    }
+
+    value(t) {
+        if (!('value' in this.n)) return null
+        if (!t) return this.n.value
+        this.n.value = `${t}`
         return this
     }
 
@@ -233,7 +261,7 @@ class NodeWrapper {
                     _t[p] = v
                 }
                 else {
-                    t[p] = v
+                    t.n[p] = v
                 }
             },
         })
