@@ -263,6 +263,7 @@ class NodeWrapper {
                 else {
                     t.n[p] = v
                 }
+                return true
             },
         })
     }
