@@ -190,7 +190,9 @@ class NodeWrapper {
 
     append(...n) {
         if (!n) return this
-        for(let _ of n) {
+        let _n = [...n]
+        if (_n[0] instanceof Array) _n = _n[0]
+        for(let _ of _n) {
             if (_ instanceof NodeWrapper) {
                 this.n.appendChild(_.get())
             } else {
