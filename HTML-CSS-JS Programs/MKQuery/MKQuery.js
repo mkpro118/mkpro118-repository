@@ -176,7 +176,7 @@ class NodeWrapper {
         return this
     }
 
-    value(t) {
+    val(t) {
         if (!('value' in this.n)) return null
         if (!t && !(t === '')) return this.n.value
         this.n.value = `${t}`
