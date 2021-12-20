@@ -110,6 +110,15 @@ class MQ {
         return this
     }
 
+    map(c) {
+        if (typeof c !== 'function') throw new MQIllegalArguementError("Illegal Argument")
+        const _results = []
+        for(let _ of this.#nl) {
+            _results.push(c(_))
+        }
+        return _results
+    }
+
     first() {return this.#nl[0]}
 
     last() {return this.#nl[this.#nl.length - 1]}
@@ -169,7 +178,7 @@ class NodeWrapper {
 
     value(t) {
         if (!('value' in this.n)) return null
-        if (!t) return this.n.value
+        if (!t && !(t === '')) return this.n.value
         this.n.value = `${t}`
         return this
     }
@@ -279,7 +288,7 @@ class NodeWrapper {
         return this
     }
 
-    each() {
+    each(c) {
         if (typeof c !== 'function') throw new MQIllegalArguementError("Illegal Argument")
         c(this)
         return this
