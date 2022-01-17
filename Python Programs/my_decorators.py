@@ -36,6 +36,7 @@ class Decorators:
             self._async = _is_async(fn)
             self._, self.result = None, None
             self.__name__ = fn.__name__
+            self.__decorated_func = True
             (self.__setattr__(key, value) for key, value in attrs.items())
 
         def __meta_run(self, *args, **kwargs):
@@ -43,7 +44,12 @@ class Decorators:
             Defines the _run function for classes
             '''
             self.result = _run(self.fn(*args, **kwargs)) if self._async else self.fn(*args, **kwargs)
+
+        def __meta_getattr(self, attr):
+            if hasattr(self.fn, '__decorated_func'):
+                return self.fn.__getattribute__(f'{attr}')
         cls.__init__ = __meta_init
+        cls.__getattr__ = __meta_getattr
         cls._run = __meta_run
         return cls
 
@@ -85,6 +91,7 @@ class Decorators:
             '''
 
             def __call__(self, *args, **kwargs):
+                print(f'Tracking time of execution of {self.__name__}')
                 self._ = pc()
                 self._run(*args, **kwargs)
                 self._ = pc() - self._
@@ -238,28 +245,27 @@ class Decorators:
             a particular cache if a key is provided, otherwise clears the
             entire cache of the function.
             '''
-            c = {}
+            cache = {}
+            cache_counter = 0
 
             def __call__(self, *args):
                 try:
-                    return self.c[(args)]
+                    return self.cache[(args)]
                 except KeyError:
                     return self.__missing(args)
+                else:
+                    self.cache_counter += 1
 
             def __missing(self, key):
                 self._run(*key)
-                self.c[key] = self.result
-                return self.c[key]
+                self.cache[key] = self.result
+                return self.cache[key]
 
             def purge(self, key=Decorators.Sentinel()):
                 try:
-                    return self.c.pop(key)
+                    return self.cache.pop(key)
                 except KeyError:
-                    self.c.clear()
-
-            @property
-            def cache(self):
-                return self.cache
+                    self.cache.clear()
 
         return Memoize(func)
 
@@ -299,7 +305,7 @@ if __name__ == '__main__':
 
     print('digits in factorial of 36:', len(f'{main(36)}'))
     print('digits in factorial of 46:', len(f'{main(46)}'))
-    print(fact.individual_time_list)
+    print(*fact.individual_time_list, sep="n")
     # main took 0.00017710 seconds to execute
     # digits in factorial of 36: 42
     # main took 0.00001270 seconds to execute

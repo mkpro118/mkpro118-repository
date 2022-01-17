@@ -90,8 +90,16 @@ class YTPlaylistInfo:
                         Length = self._findDuration(item['contentDetails']['duration'], work_type='length')
                     except KeyError:
                         Length = 'unknown'
-                    vid_info = {'Id': Id, 'ViewCount': ViewCount, 'Title': Title, 'Link': f'https://youtu.be/{self.playlistID}',
-                                'Duration': Duration, 'LikeCount': LikeCount, 'DislikeCount': DislikeCount, 'Length': Length}
+                    vid_info = {
+                        'Id': Id,
+                        'ViewCount': ViewCount,
+                        'Title': Title,
+                        'Link': f'https://youtu.be/{self.playlistID}',
+                        'Duration': Duration,
+                        'LikeCount': LikeCount,
+                        'DislikeCount': DislikeCount,
+                        'Length': Length
+                        }
                     self.videos.append(vid_info)
 
                 self.nextPageToken = playlist_response.get('nextPageToken')
@@ -329,9 +337,9 @@ if __name__ == '__main__':
     most_viewed = Playlist.sortbyViews()
     alphabetically = Playlist.sortbyTitle()
     print(total_duration)
-    for video in most_long:
-        print(Playlist.getVideoTitle(video), Playlist.getVideoDuration(video))
-    # print('Longest video is :', Playlist.getVideoTitle(k := next(most_long)), 'with a play time of', Playlist.getVideoDuration(k))
+    # for video in most_long:
+    #     print(Playlist.getVideoTitle(video), Playlist.getVideoDuration(video))
+    print('Longest video is :', Playlist.getVideoTitle(k := next(most_long)), 'with a play time of', Playlist.getVideoDuration(k))
     print('Most Viewed Video', Playlist.getVideoTitle(k := next(most_viewed)), '\t Views : ', Playlist.getNumberOfViews(k))
     print('Most Liked Video', Playlist.getVideoTitle(k := next(most_liked)), '\t Likes : ', Playlist.getNumberOfLikes(k))
     print('Most Disliked Video', Playlist.getVideoTitle(k := next(most_disliked)), '\t Dislikes : ', Playlist.getNumberOfDislikes(k))

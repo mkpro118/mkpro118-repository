@@ -4,7 +4,7 @@ import numpy as np
 
 class NeuralNet:
     def __init__(self,
-                 classes=3,
+                 classes=None,
                  hidden_nodes=10,
                  learning_rate=1e-3,
                  activation_function='sigmoid',
@@ -19,7 +19,7 @@ class NeuralNet:
                  bias_output=None,
                  random_state=118):
 
-        assert isinstance(classes, int), f'Number of Classes must be an {int}'
+        assert isinstance(classes, int) or classes is None, f'Number of Classes must be an {int}'
         assert isinstance(hidden_nodes, int), f'Number of Hidden Layer Nodes must be an {int}'
         assert isinstance(learning_rate, (int, float)), f'Learning Rate must be a number -> {int} or {float}'
         assert isinstance(weights_hidden, np.ndarray) or weights_hidden is None, f'Hidden Layer Weights must be a {np.ndarray} object'
@@ -196,6 +196,7 @@ class NeuralNet:
         assert isinstance(num_iters, int), f'Number of Iterations MUST be a {int} object'
         assert isinstance(tolerance, (int, float)), f'Error Tolerance MUST be a {float} or {int} object'
 
+        self.classes = labels.max() + 1 if not self.classes else self.classes
         self.X = feature_set.astype(float)
         self.y = labels if not is_one_hot_encoded else one_hot_decode(labels)
         self.one_hot = labels if is_one_hot_encoded else one_hot_encode(labels)
@@ -239,12 +240,12 @@ if __name__ == '__main__':
     df = pd.read_csv('Data/MLData.csv', index_col='ID')
     X = df[['Attribute 1', 'Attribute 2', 'Attribute 3', 'Attribute 4']].values
     y = df['Answers'].values
+    print(X, y)
 
     X_train, X_test, y_train, y_test = train_test_split(X, y)
 
-    model1 = NeuralNet(classes=4)
+    model1 = NeuralNet()
     model1.fit(X_train, y_train)
-    print(model1.score(X_test, y_test))
     print()
 
     X_train, X_test, y_train, y_test = train_test_split(X, y)

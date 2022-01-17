@@ -63,9 +63,8 @@ class NeuralNetworkMultiClassifier:
                 dz_output_da_hidden = self.weights_output
                 dcost_da_hidden = dcost_dz_output @ dz_output_da_hidden.T
                 da_hidden_dz_hidden = self._sigmoid_derivative(z_hidden)
-                dz_hidden_dweights_hidden = X
-                dcost_weights_hidden = dz_hidden_dweights_hidden.T @ (da_hidden_dz_hidden * dcost_da_hidden)
 
+                dcost_weights_hidden = X.T @ (da_hidden_dz_hidden * dcost_da_hidden)
                 dcost_bias_hidden = dcost_da_hidden * da_hidden_dz_hidden
 
                 # update weights and bias
@@ -84,11 +83,10 @@ class NeuralNetworkMultiClassifier:
 
         assert isinstance(X, np.ndarray) and isinstance(y, np.ndarray)
         self.one_hot_encoding = np.zeros((X.shape[0], self.output_answers))
-        for i in range(self.one_hot_encoding.shape[0]):
-            self.one_hot_encoding[i, y[i]] = 1
-        self.instances = X.shape[0]
-        attributes = X.shape[1]
-        self.weights_hidden = np.random.rand(attributes, self.hidden_nodes)
+        self.one_hot_encoding[np.arange(y.size), y] = 1
+        self.examples = X.shape[0]
+        self.attributes = X.shape[1]
+        self.weights_hidden = np.random.rand(self.attributes, self.hidden_nodes)
         self.bias_hidden = np.random.rand(self.hidden_nodes)
         self.weights_output = np.random.rand(self.hidden_nodes, self.output_answers)
         self.bias_output = np.random.rand(self.output_answers)

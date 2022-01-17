@@ -1,5 +1,6 @@
-# from LearningNeuralNetworksMultiClassClassificationVersion import NeuralNetworkMultiClassifier as NNMC
-from Test import NeuralNetworkMultiClassifier as NNMC
+from LearningNeuralNetworksMultiClassClassificationVersion import NeuralNetworkMultiClassifier as NNMC
+from NeuralNet import NeuralNet as NN
+# from Test import NeuralNetworkMultiClassifier as NNMC
 from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
@@ -19,7 +20,7 @@ df = pd.read_csv('Data/MLData.csv', index_col='ID')
 X = df[['Attribute 1', 'Attribute 2', 'Attribute 3', 'Attribute 4']].values
 y = df['Answers'].values
 
-# # Cluster Dataset
+# Cluster Dataset
 # df = pd.read_csv('Data/Cluster Dataset.csv')
 # X = df[['x', 'y']].values
 # y = df['color'].values
@@ -51,8 +52,13 @@ y = df['Answers'].values
 X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=118)
 print(round(pc() - t1, 4), 'seconds', end='\n\n')
 
-models = [NNMC(output_answers=6), LogisticRegression(solver='liblinear'),
-          DecisionTreeClassifier(), RandomForestClassifier(), MLPClassifier()]
+models = [NNMC(output_answers=4),
+          LogisticRegression(solver='liblinear'),
+          DecisionTreeClassifier(),
+          RandomForestClassifier(),
+          MLPClassifier(),
+          # NN(classes=4, activation_function='relu'),]
+          NN()]
 
 
 def compare(model):
@@ -75,7 +81,7 @@ def main():
         count += 1
 
     df.sort_values(by=['Accuracy (%)', 'Time (s)'], ascending=[False, True], inplace=True)
-    print(df.head())
+    print(df.head(6))
 
 
 if __name__ == '__main__':

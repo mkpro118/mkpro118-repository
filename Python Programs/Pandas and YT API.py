@@ -7,8 +7,17 @@ from YTPlaylist import YTPlaylistInfo
 # src = input('Enter Playlist ID or link: ')
 # print()
 
-pl = YTPlaylistInfo.from_url('https://www.youtube.com/watch?v=yD0_1DPmfKM&list=PLQVvvaa0QuDe9nqlirjacLkBYdgc2inh3&index=1')
+url = 'https://www.youtube.com/playlist?list=PL-osiE80TeTtoQCKZ03TU5fNfx2UY6U4p'
+
+plt.style.use('dark_background')
+
+pl = YTPlaylistInfo.from_url(url)
 videos_list = pl.videos
+videos_list_duration = pl.sortbyDuration()
+videos_list_likes = pl.sortbyLikes()
+videos_list_dislikes = pl.sortbyDislikes()
+videos_list_title = pl.sortbyTitle()
+videos_list_views = pl.sortbyViews()
 videos = {
     'Title': [], 'Duration': [], 'Views': [],
     'Likes': [], 'Dislikes': [], 'Length': [],
@@ -24,7 +33,10 @@ for video in videos_list:
     Likes = pl.getNumberOfLikes(video)
     Dislikes = pl.getNumberOfDislikes(video)
     Length = pl.getVideoLength(video)
-    L_D = int(Likes) / int(Dislikes) if Likes != 'unknown' and Dislikes != 'unknown' else np.nan
+    try:
+        L_D = int(Likes) / int(Dislikes) if Likes != 'unknown' and Dislikes != 'unknown' else np.nan
+    except ZeroDivisionError:
+        L_D = np.nan
     videos['Title'].append(Title if Title != 'unknown' else np.nan)
     videos['Duration'].append(Duration if Duration != 'unknown' else np.nan)
     videos['Id'].append(Id if Id != 'unknown' else np.nan)
@@ -51,7 +63,8 @@ filt = (df['Views'] != np.nan) & (df['Likes'] != np.nan)
 ax1.scatter(
     df[filt]['Views'],
     df[filt]['Likes'],
-    linewidth=1, alpha=0.69)
+    linewidth=1,
+    alpha=0.69,)
 ax1.set_title('Likes to Views Comparison')
 ax1.set_xlabel('Views')
 ax1.set_ylabel('Likes')

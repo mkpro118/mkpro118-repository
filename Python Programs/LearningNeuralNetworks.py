@@ -3,7 +3,8 @@ import numpy as np
 
 class NeuralNetworkPractice:
     def __init__(self, weights=None, bias=None,
-                 learning_rate=0.05, num_iters=20000, random_state=118):
+                 learning_rate=0.05, num_iters=20000,
+                 random_state=118):
         '''
         This method initialises the NN class
         Required Parameters: X and y
@@ -103,7 +104,7 @@ class NeuralNetworkPractice:
             weights and bias for the NN model
             we use the chain rule of differentiation to do this
             dcost_dpred is the derivative of the cost function with respect to the predictions
-            dpred_dp is the derivative of the predictedd values with the input dot product
+            dpred_dp is the derivative of the predicted values with the input dot product
             NOTE : in the differentiantion, we also get a dp/dweights
             but since dp = x₁w₁ + x₂x₂ .... + b
             dp/dweight is actually equal to the input vector itself
