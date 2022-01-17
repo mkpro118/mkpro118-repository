@@ -2,7 +2,7 @@ import pandas as pd
 from matplotlib import pyplot as plt
 from itertools import combinations
 
-df = pd.read_csv('Data/MLData.csv', index_col='ID')
+df = pd.read_csv('MLData.csv', index_col='ID')
 # print(df)
 
 attrs = {}
