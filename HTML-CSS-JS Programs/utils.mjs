@@ -31,17 +31,17 @@ export function* range(...args) {
         case 1:
             stop = args[0]
             break;
-        case 1:
+        case 2:
             start = args[0]
             stop = args[1]
             break;
-        case 1:
+        case 3:
             start = args[0]
             stop = args[1]
             step = args[2]
             break;
         default:
-            throw new 'Too many arguments'
+            throw 'Too many arguments'
     }
     while (start < stop) {
         yield start
