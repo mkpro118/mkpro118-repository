@@ -1,5 +1,14 @@
-from functools import wraps
-from my_decorators import export
+try:
+    from my_decorators import export
+except ImportError:
+    def export(func):
+        import sys as _sys
+        mod = _sys.modules[func.__module__]
+        if hasattr(mod, '__all__'):
+            mod.__all__.append(func.__name__)
+        else:
+            mod.__all__ = [func.__name__]
+        return func
 
 
 def _equals(x, y, strict=False):
@@ -58,7 +67,7 @@ def assert_equals(expected, *args, strict=False, **kwargs):
         print()
         actual = func(*args, **kwargs)
         eq = _equals(expected, actual, strict)
-        print(f'{func.__name__} {"passed" if eq else "FAILED"} ({args= }',
+        print(f'{func.__name__} {"passed ✅" if eq else "FAILED ❗"} ({args= }',
               f'{kwargs= }). Expected: {expected} | Actual: {actual} ({strict=})')
         print()
         return func
@@ -66,9 +75,9 @@ def assert_equals(expected, *args, strict=False, **kwargs):
 
 
 # Example Usage
-@assert_equals(26, 13, 2, strict=True)
-@assert_equals(18, 3, 6, strict=False)
-@assert_equals(15, 5, 3, strict=False)
+@assert_equals(26, 12, 2, strict=True)
+@assert_equals(18, 3, 6)
+@assert_equals(15, 5, 3)
 @describe('Testing multiplication of two numbers')
 def mult(a, b):
     return a * b

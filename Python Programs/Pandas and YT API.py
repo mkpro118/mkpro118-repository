@@ -7,15 +7,17 @@ from YTPlaylist import YTPlaylistInfo
 # src = input('Enter Playlist ID or link: ')
 # print()
 
-url = 'https://www.youtube.com/playlist?list=PL-osiE80TeTtoQCKZ03TU5fNfx2UY6U4p'
+url = 'https://www.youtube.com/playlist?list=PL4cUxeGkcC9ivBf_eKCPIAYXWzLlPAm6G'
 
 plt.style.use('dark_background')
+pd.set_option('display.max_colwidth', 150)
+
 
 pl = YTPlaylistInfo.from_url(url)
 videos_list = pl.videos
 videos_list_duration = pl.sortbyDuration()
 videos_list_likes = pl.sortbyLikes()
-videos_list_dislikes = pl.sortbyDislikes()
+# videos_list_dislikes = pl.sortbyDislikes()
 videos_list_title = pl.sortbyTitle()
 videos_list_views = pl.sortbyViews()
 videos = {
@@ -49,8 +51,109 @@ for video in videos_list:
 
 print(pl.getTotalDuration())
 
+
+print('\nList of Videos')
+df = pd.DataFrame(videos)
+print(df[['Title', ]])
+
+videos = {
+    'Title': [], 'Duration': [], 'Views': [],
+    'Likes': [], 'Dislikes': [], 'Length': [],
+    'Id': [], 'Link': [], 'Like/Dislike': []
+}
+
+for video in videos_list_duration:
+    Title = pl.getVideoTitle(video)
+    Duration = pl.getVideoDuration(video)
+    Id = pl.getVideoID(video)
+    Link = pl.getVideoLink(video)
+    Views = pl.getNumberOfViews(video)
+    Likes = pl.getNumberOfLikes(video)
+    Dislikes = pl.getNumberOfDislikes(video)
+    Length = pl.getVideoLength(video)
+    try:
+        L_D = int(Likes) / int(Dislikes) if Likes != 'unknown' and Dislikes != 'unknown' else np.nan
+    except ZeroDivisionError:
+        L_D = np.nan
+    videos['Title'].append(Title if Title != 'unknown' else np.nan)
+    videos['Duration'].append(Duration if Duration != 'unknown' else np.nan)
+    videos['Id'].append(Id if Id != 'unknown' else np.nan)
+    videos['Views'].append(int(Views) if Views != 'unknown' else np.nan)
+    videos['Likes'].append(int(Likes) if Likes != 'unknown' else np.nan)
+    videos['Dislikes'].append(int(Dislikes) if Dislikes != 'unknown' else np.nan)
+    videos['Length'].append(Length if Length != 'unknown' else np.nan)
+    videos['Link'].append(Link if Link != 'unknown' else np.nan)
+    videos['Like/Dislike'].append(L_D)
+
+print('\n\nSorted by Duration')
 df = pd.DataFrame(videos)
 print(df[['Title', 'Duration']])
+
+videos = {
+    'Title': [], 'Duration': [], 'Views': [],
+    'Likes': [], 'Dislikes': [], 'Length': [],
+    'Id': [], 'Link': [], 'Like/Dislike': []
+}
+
+for video in videos_list_views:
+    Title = pl.getVideoTitle(video)
+    Duration = pl.getVideoDuration(video)
+    Id = pl.getVideoID(video)
+    Link = pl.getVideoLink(video)
+    Views = pl.getNumberOfViews(video)
+    Likes = pl.getNumberOfLikes(video)
+    Dislikes = pl.getNumberOfDislikes(video)
+    Length = pl.getVideoLength(video)
+    try:
+        L_D = int(Likes) / int(Dislikes) if Likes != 'unknown' and Dislikes != 'unknown' else np.nan
+    except ZeroDivisionError:
+        L_D = np.nan
+    videos['Title'].append(Title if Title != 'unknown' else np.nan)
+    videos['Duration'].append(Duration if Duration != 'unknown' else np.nan)
+    videos['Id'].append(Id if Id != 'unknown' else np.nan)
+    videos['Views'].append(int(Views) if Views != 'unknown' else np.nan)
+    videos['Likes'].append(int(Likes) if Likes != 'unknown' else np.nan)
+    videos['Dislikes'].append(int(Dislikes) if Dislikes != 'unknown' else np.nan)
+    videos['Length'].append(Length if Length != 'unknown' else np.nan)
+    videos['Link'].append(Link if Link != 'unknown' else np.nan)
+    videos['Like/Dislike'].append(L_D)
+
+print('\n\nSorted by Views')
+df = pd.DataFrame(videos)
+print(df[['Title', 'Views']])
+
+videos = {
+    'Title': [], 'Duration': [], 'Views': [],
+    'Likes': [], 'Dislikes': [], 'Length': [],
+    'Id': [], 'Link': [], 'Like/Dislike': []
+}
+
+for video in videos_list_likes:
+    Title = pl.getVideoTitle(video)
+    Duration = pl.getVideoDuration(video)
+    Id = pl.getVideoID(video)
+    Link = pl.getVideoLink(video)
+    Views = pl.getNumberOfViews(video)
+    Likes = pl.getNumberOfLikes(video)
+    Dislikes = pl.getNumberOfDislikes(video)
+    Length = pl.getVideoLength(video)
+    try:
+        L_D = int(Likes) / int(Dislikes) if Likes != 'unknown' and Dislikes != 'unknown' else np.nan
+    except ZeroDivisionError:
+        L_D = np.nan
+    videos['Title'].append(Title if Title != 'unknown' else np.nan)
+    videos['Duration'].append(Duration if Duration != 'unknown' else np.nan)
+    videos['Id'].append(Id if Id != 'unknown' else np.nan)
+    videos['Views'].append(int(Views) if Views != 'unknown' else np.nan)
+    videos['Likes'].append(int(Likes) if Likes != 'unknown' else np.nan)
+    videos['Dislikes'].append(int(Dislikes) if Dislikes != 'unknown' else np.nan)
+    videos['Length'].append(Length if Length != 'unknown' else np.nan)
+    videos['Link'].append(Link if Link != 'unknown' else np.nan)
+    videos['Like/Dislike'].append(L_D)
+
+print('\n\nSorted by Likes')
+df = pd.DataFrame(videos)
+print(df[['Title', 'Likes']])
 
 # plotting
 fig, (ax1, ax2) = plt.subplots(nrows=1, ncols=2)
