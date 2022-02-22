@@ -32,11 +32,9 @@ def y(f: callable, x0: float, y0: float, /, *, x1: float = None) -> float:
 
 if __name__ == '__main__':
     # Change as required
-    x0 = 1
+    x0 = 1.
     # Change as required
-    x1 = 1.5
-    # Change as required
-    y0 = 0
+    y0 = 0.
 
     # This will auto run all iterations
     y(f, x0, y0)
