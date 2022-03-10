@@ -3,7 +3,7 @@ export function memoize(func) {
     return (...args) => {
         const str_args = JSON.stringify(args)
         if (!cache[str_args]) {
-            cache[str_args] = func(str_args)
+            cache[str_args] = func(...args)
         }
         return cache[str_args]
     }
