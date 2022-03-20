@@ -16,32 +16,32 @@ def safeguard(func):
 
 
 class HTML:
-    SECTION = 'section'
-    SPAN = 'span'
-    CODE = 'code'
-    DIV = 'div'
-    UL = 'ul'
-    LI = 'li'
     DD = 'dd'
     DL = 'dl'
     DT = 'dt'
+    LI = 'li'
+    UL = 'ul'
+    CODE = 'code'
+    DIV = 'div'
+    SPAN = 'span'
+    SECTION = 'section'
 
 
 class CSS:
+    BLOCK = 'block'
     CLASS = 'class'
     DETAIL = 'detail'
-    CONSTRUCTOR_DETAILS = 'constructorDetails'
-    METHOD_DETAILS = 'methodDetails'
-    BLOCK_LIST = 'blockList'
-    MEMBER_SIGNATURE = 'memberSignature'
-    MODIFIERS = 'modifiers'
-    RETURN_TYPE = 'returnType'
-    MEMBER_NAME = 'memberName'
     ARGUMENTS = 'arguments'
-    BLOCK = 'block'
+    MODIFIERS = 'modifiers'
+    BLOCK_LIST = 'blockList'
+    MEMBER_NAME = 'memberName'
     PARAM_LABEL = 'paramLabel'
+    RETURN_TYPE = 'returnType'
     RETURN_LABEL = 'returnLabel'
     THROWS_LABEL = 'throwsLabel'
+    METHOD_DETAILS = 'methodDetails'
+    MEMBER_SIGNATURE = 'memberSignature'
+    CONSTRUCTOR_DETAILS = 'constructorDetails'
     OVERRIDE_SPECIFY_LABEL = 'overrideSpecifyLabel'
 
 
