@@ -2,11 +2,11 @@ from bs4 import BeautifulSoup as BS
 import requests
 
 
-def safeguard(func):
+def safeguard(func: callable) -> callable:
     from functools import wraps
 
     @wraps(func)
-    def wrapper(self):
+    def wrapper(self: object) -> object:
         try:
             return func(self)
         except AttributeError:
@@ -17,38 +17,38 @@ def safeguard(func):
 
 
 class HTML:
-    DD = 'dd'
-    DL = 'dl'
-    DT = 'dt'
-    LI = 'li'
-    UL = 'ul'
-    CODE = 'code'
-    DIV = 'div'
-    SPAN = 'span'
-    SECTION = 'section'
+    DD: str = 'dd'
+    DL: str = 'dl'
+    DT: str = 'dt'
+    LI: str = 'li'
+    UL: str = 'ul'
+    CODE: str = 'code'
+    DIV: str = 'div'
+    SPAN: str = 'span'
+    SECTION: str = 'section'
 
 
 class CSS:
-    BLOCK = 'block'
-    CLASS = 'class'
-    DETAIL = 'detail'
-    ARGUMENTS = 'arguments'
-    MODIFIERS = 'modifiers'
-    BLOCK_LIST = 'blockList'
-    MEMBER_NAME = 'memberName'
-    PARAM_LABEL = 'paramLabel'
-    RETURN_TYPE = 'returnType'
-    RETURN_LABEL = 'returnLabel'
-    THROWS_LABEL = 'throwsLabel'
-    METHOD_DETAILS = 'methodDetails'
-    MEMBER_SIGNATURE = 'memberSignature'
-    CONSTRUCTOR_DETAILS = 'constructorDetails'
-    OVERRIDE_SPECIFY_LABEL = 'overrideSpecifyLabel'
+    BLOCK: str = 'block'
+    CLASS: str = 'class'
+    DETAIL: str = 'detail'
+    ARGUMENTS: str = 'arguments'
+    MODIFIERS: str = 'modifiers'
+    BLOCK_LIST: str = 'blockList'
+    MEMBER_NAME: str = 'memberName'
+    PARAM_LABEL: str = 'paramLabel'
+    RETURN_TYPE: str = 'returnType'
+    RETURN_LABEL: str = 'returnLabel'
+    THROWS_LABEL: str = 'throwsLabel'
+    METHOD_DETAILS: str = 'methodDetails'
+    MEMBER_SIGNATURE: str = 'memberSignature'
+    CONSTRUCTOR_DETAILS: str = 'constructorDetails'
+    OVERRIDE_SPECIFY_LABEL: str = 'overrideSpecifyLabel'
 
 
 class Method:
-    def __init__(self, method):
-        self.method = method
+    def __init__(self, method: BS):
+        self.method: BS = method
         self.find_modifiers()
         self.find_name()
         self.find_return_type()
@@ -69,42 +69,42 @@ class Method:
         self.generate_stub()
 
     @safeguard
-    def find_signature(self):
-        self.signature = self.method.find(HTML.DIV, {CSS.CLASS: CSS.MEMBER_SIGNATURE}).text
-        self.signature = ', '.join(map(lambda p: p.strip(), self.signature.split(',')))
+    def find_signature(self) -> None:
+        self.signature: str = self.method.find(HTML.DIV, {CSS.CLASS: CSS.MEMBER_SIGNATURE}).text
+        self.signature: str = ', '.join(map(lambda p: p.strip(), self.signature.split(',')))
 
     @safeguard
-    def find_modifiers(self):
-        self.modifiers = self.method.find(HTML.SPAN, {CSS.CLASS: CSS.MODIFIERS}).text
+    def find_modifiers(self) -> None:
+        self.modifiers: str = self.method.find(HTML.SPAN, {CSS.CLASS: CSS.MODIFIERS}).text
 
     @safeguard
-    def find_name(self):
-        self.name = self.method.find(HTML.SPAN, {CSS.CLASS: CSS.MEMBER_NAME}).text
+    def find_name(self) -> None:
+        self.name: str = self.method.find(HTML.SPAN, {CSS.CLASS: CSS.MEMBER_NAME}).text
 
     @safeguard
-    def find_return_type(self):
-        self.return_type = self.method.find(HTML.SPAN, {CSS.CLASS: CSS.RETURN_TYPE}).text
+    def find_return_type(self) -> None:
+        self.return_type: str = self.method.find(HTML.SPAN, {CSS.CLASS: CSS.RETURN_TYPE}).text
         self.return_type = self.return_type.replace('java.lang.', '').lower().strip()
 
     @safeguard
-    def find_params(self):
-        self.params = self.method.find(HTML.SPAN, {CSS.CLASS: CSS.ARGUMENTS}).text
+    def find_params(self) -> None:
+        self.params: str = self.method.find(HTML.SPAN, {CSS.CLASS: CSS.ARGUMENTS}).text
         self.params = self.params.replace('java.lang.', '').replace(')', '')
         self.params = ', '.join(map(lambda p: p.strip(), self.params.split(',')))
 
     @safeguard
-    def find_description(self):
-        self.description = self.method.find(HTML.DIV, {CSS.CLASS: CSS.BLOCK}).text
+    def find_description(self) -> None:
+        self.description: str = self.method.find(HTML.DIV, {CSS.CLASS: CSS.BLOCK}).text
         self.description = self.description.replace('\r', '').replace('\n ', '\n').strip()
-        self.description = self.description.split('\n')
+        self.description: list = self.description.split('\n')
 
     @safeguard
-    def find_params_description(self):
+    def find_params_description(self) -> None:
         if not (self.method.find(HTML.SPAN, {CSS.CLASS: CSS.PARAM_LABEL})):
             raise AttributeError
-        self.params_description = []
-        dl = self.method.find(HTML.DL)
-        start = False
+        self.params_description: list = []
+        dl: BS = self.method.find(HTML.DL)
+        start: bool = False
         for i in dl.children:
             if i.name == 'dt' and i.find(HTML.SPAN, {CSS.CLASS: CSS.PARAM_LABEL}):
                 start = True
@@ -117,39 +117,39 @@ class Method:
                 continue
 
     @safeguard
-    def find_return_description(self):
+    def find_return_description(self) -> None:
         if not (_ := self.method.find(HTML.SPAN, {CSS.CLASS: CSS.RETURN_LABEL})):
             raise AttributeError
-        description = f'\n * {" " * 7}'.join(map(lambda x: x.strip(), _.next.next.next.text.strip().split('\r')))
-        self.return_description = f"@return {description}"
+        description: str = f'\n * {" " * 7}'.join(map(lambda x: x.strip(), _.next.next.next.text.strip().split('\r')))
+        self.return_description: str = f"@return {description}"
 
     @safeguard
-    def find_throws_description(self):
+    def find_throws_description(self) -> None:
         if not (self.method.find(HTML.SPAN, {CSS.CLASS: CSS.THROWS_LABEL})):
             raise AttributeError
-        self.throws_description = []
-        dl = self.method.find(HTML.DL)
-        start = False
+        self.throws_description: list = []
+        dl: BS = self.method.find(HTML.DL)
+        start: bool = False
         for i in dl.children:
             if i.name == 'dt' and i.find(HTML.SPAN, {CSS.CLASS: CSS.THROWS_LABEL}):
                 start = True
             elif i.name == 'dt' and start:
                 break
             elif i.name == 'dd' and start:
-                description = f'\n * {" " * 7}'.join(map(lambda x: x.strip(), i.text.strip().split('\r')))
+                description: str = f'\n * {" " * 7}'.join(map(lambda x: x.strip(), i.text.strip().split('\r')))
                 self.throws_description.append(f'@throws {description}\n')
             else:
                 continue
 
     @safeguard
-    def find_override(self):
+    def find_override(self) -> None:
         if not (_ := self.method.find(HTML.SPAN, {CSS.CLASS: CSS.OVERRIDE_SPECIFY_LABEL})):
             raise AttributeError
-        self.override = '@Override\n'
+        self.override: str = '@Override\n'
 
     @safeguard
-    def generate_comments(self):
-        self.comment = '/**\n'
+    def generate_comments(self) -> None:
+        self.comment: str = '/**\n'
         for line in self.description:
             self.comment += f' * {line}\n'
         if self.params_description:
@@ -166,12 +166,12 @@ class Method:
         self.comment += ' */'
 
     @safeguard
-    def generate_stub(self):
-        self.stub = f'{self.comment}\n{self.override}{self.signature} {{\n  {self.default_return()}\n}}'
+    def generate_stub(self) -> None:
+        self.stub: str = f'{self.comment}\n{self.override}{self.signature} {{\n  {self.default_return()}\n}}'
         self.stub = self.stub.replace('java.lang.', '')
 
     @safeguard
-    def default_return(self):
+    def default_return(self) -> str:
         if self.return_type == 'void':
             return ''
         elif self.return_type in ['byte', 'short', 'int', 'long', 'float', 'double', ]:
@@ -183,29 +183,29 @@ class Method:
         else:
             return 'return null;'
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.stub
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return str(self)
 
 
-def get_source(url):
+def get_source(url: str) -> str:
     with requests.get(url) as response:
         assert response.ok
         return response.text
 
 
-def get_soup(source, parser):
+def get_soup(source: str, parser: str) -> BS:
     return BS(source, parser)
 
 
-def get_methods(container):
+def get_methods(container: BS) -> BS:
     for _ in container.find_all(HTML.LI, {CSS.CLASS: CSS.BLOCK_LIST}):
         yield _.find(HTML.SECTION, {CSS.CLASS: CSS.DETAIL})
 
 
-def run(soup, method_type):
+def run(soup: BS, method_type: str) -> None:
     method_container = soup.find(
         HTML.SECTION,
         {
@@ -224,7 +224,7 @@ def run(soup, method_type):
         print()
 
 
-def generate(url, parser):
+def generate(url: str, parser: str) -> None:
     source = get_source(url).replace('&nbsp;', ' ').replace('&#8203;', '')
     soup = get_soup(source, parser)
     run(soup, CSS.CONSTRUCTOR_DETAILS)
