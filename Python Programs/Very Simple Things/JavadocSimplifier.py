@@ -8,10 +8,11 @@ def safeguard(func):
     @wraps(func)
     def wrapper(self):
         try:
-            func(self)
+            return func(self)
         except AttributeError:
-            field = func.__name__.replace('find_', '')
-            self.__setattr__(field, '')
+            if 'find' in func.__name__:
+                field = func.__name__.replace('find_', '')
+                self.__setattr__(field, '')
     return wrapper
 
 
@@ -70,6 +71,7 @@ class Method:
     @safeguard
     def find_signature(self):
         self.signature = self.method.find(HTML.DIV, {CSS.CLASS: CSS.MEMBER_SIGNATURE}).text
+        self.signature = ', '.join(map(lambda p: p.strip(), self.signature.split(',')))
 
     @safeguard
     def find_modifiers(self):
@@ -165,8 +167,21 @@ class Method:
 
     @safeguard
     def generate_stub(self):
-        self.stub = f'{self.comment}\n{self.override}{self.signature} {{\n\n}}'
-        print(self.stub)
+        self.stub = f'{self.comment}\n{self.override}{self.signature} {{\n  {self.default_return()}\n}}'
+        self.stub = self.stub.replace('java.lang.', '')
+
+    @safeguard
+    def default_return(self):
+        if self.return_type == 'void':
+            return ''
+        elif self.return_type in ['byte', 'short', 'int', 'long', 'float', 'double', ]:
+            return 'return 0;'
+        elif self.return_type == 'boolean':
+            return 'return false;'
+        elif self.return_type == 'char':
+            return "return '\\u0000';"
+        else:
+            return 'return null;'
 
     def __str__(self):
         return self.stub
@@ -218,10 +233,12 @@ def generate(url, parser):
 
 if __name__ == '__main__':
     URLS = [
-        'https://cs300-www.cs.wisc.edu/wp/wp-content/uploads/2020/12/spring22/p5/doc/TreasureHunt.html',
+        # 'https://cs300-www.cs.wisc.edu/wp/wp-content/uploads/2020/12/spring22/p5/doc/TreasureHunt.html',
         'https://cs300-www.cs.wisc.edu/wp/wp-content/uploads/2020/12/spring22/p5/doc/InteractiveObject.html',
     ]
     PARSER = 'lxml'
     for url in URLS:
         print(f'From: {url}')
+        print('-' * 150)
         generate(url, PARSER)
+        print('-' * 150)
