@@ -241,12 +241,7 @@ def generate(url: str, parser: str) -> None:
 
 if __name__ == '__main__':
     URLS = [
-        # 'https://cs300-www.cs.wisc.edu/wp/wp-content/uploads/2020/12/spring22/p5/doc/TreasureHunt.html',
-        # 'https://cs300-www.cs.wisc.edu/wp/wp-content/uploads/2020/12/spring22/p5/doc/InteractiveObject.html',
-        # 'https://cs300-www.cs.wisc.edu/wp/wp-content/uploads/2020/12/spring22/p5/doc/DraggableObject.html',
-        # 'https://cs300-www.cs.wisc.edu/wp/wp-content/uploads/2020/12/spring22/p5/doc/DroppableObject.html',
-        # 'https://cs300-www.cs.wisc.edu/wp/wp-content/uploads/2020/12/spring22/p5/doc/RestartGameButton.html',
-        'https://cs300-www.cs.wisc.edu/wp/wp-content/uploads/2020/12/spring22/p5/doc/ScreenshotButton.html',
+        'https://cs300-www.cs.wisc.edu/wp/wp-content/uploads/2020/12/spring22/p5/doc/TreasureHunt.html',
     ]
     PARSER = 'lxml'
     for url in URLS:
