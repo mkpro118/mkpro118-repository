@@ -20,4 +20,14 @@ async function cheat() {
         click_play_button()
         await sleep(5000)
     }
+
+    document.querySelectorAll('div.question-container').forEach(async q => {
+        try {
+            q.querySelector('button.show-answer-button').click()
+            q.querySelector('button.show-answer-button').click()
+            q.querySelector('textarea').click()
+            await sleep(500);
+            q.querySelector('textarea').value = q.parentNode.nextElementSibling.querySelector('span.forfeit-answer').innerText.trim()
+        } catch(err) {}
+    })
 }
