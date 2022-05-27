@@ -7,7 +7,7 @@ from YTPlaylist import YTPlaylistInfo
 # src = input('Enter Playlist ID or link: ')
 # print()
 
-url = 'https://www.youtube.com/playlist?list=PL4cUxeGkcC9ivBf_eKCPIAYXWzLlPAm6G'
+url = 'https://www.youtube.com/playlist?list=PLWIlraZqYvA8a9QbtOpnce26jjhF3zZLC'
 
 plt.style.use('dark_background')
 pd.set_option('display.max_colwidth', 150)

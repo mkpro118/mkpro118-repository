@@ -1,11 +1,16 @@
 from mynn.dense import Dense
-from mynn.activators import Sigmoid, ReLU, TanH, Softmax
+from mynn.activators import (
+    # Sigmoid,
+    # ReLU,
+    TanH,
+    Softmax
+)
 from mynn.cost import CategoricalCrossEntropy
 from mynn.model import Model
 from mynn.preprocess import train_test_split, normalize, categorize, reshape
 from sklearn import datasets
 import numpy as np
-from my_decorators import Decorators
+# from my_decorators import Decorators
 
 # load dataset
 
